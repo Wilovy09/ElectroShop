@@ -5,6 +5,7 @@ import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import Role from './role.js'
+import { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -19,7 +20,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare roleId: number
 
   @belongsTo(() => Role)
-  declare role: any
+  declare role: BelongsTo<typeof Role>
+
   @column()
   declare fullName: string | null
 

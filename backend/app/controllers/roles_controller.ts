@@ -2,6 +2,11 @@ import Role from '#models/role'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class RolesController {
+  async getAll({ response }: HttpContext) {
+    const roles = await Role.all()
+    return response.ok({ roles })
+  }
+
   async create({ request, response }: HttpContext) {
     const { nameRole } = request.only(['nameRole'])
     try {
