@@ -1,9 +1,8 @@
-export default function Auth() {
+export default function AuthPage() {
   return (
     <>
-      <div>
-        <h1 className="text-center text-black">Login!</h1>
-      </div>
+      <h1>Auth page</h1>
     </>
   );
 }
+
