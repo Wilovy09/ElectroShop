@@ -1,5 +1,7 @@
 use actix_web::{App, HttpServer};
 mod routes;
+// mod models;
+// use models::{Role, User, Category, Product, Cart, CartProduct, Card, Location};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
