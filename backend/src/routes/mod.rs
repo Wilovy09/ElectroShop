@@ -1,4 +1,6 @@
-use actix_web::{get, http::header, web, HttpResponse};
+use crate::responses::message::Messages;
+use actix_web::{get, web, HttpResponse};
+use crate::models::role::Role;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(health_check);
@@ -6,13 +8,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 
 #[get("/hc")]
 async fn health_check() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(header::ContentType::json())
-        .body(
-            r#"
-        {
-            "healthCheck": "Ok"
-        }
-        "#,
-        )
+    let message = Messages {
+        message: "Server online!".to_string(),
+    };
+    HttpResponse::Ok().json(message)
 }
