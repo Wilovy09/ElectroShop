@@ -2,5 +2,5 @@
 
 CREATE TABLE Role (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nameRole TEXT NOT NULL CHECK(nameRole IN ('Administrator', 'User'))
+  name_role TEXT NOT NULL UNIQUE CHECK(name_role IN ('Administrator', 'User'))
 );
