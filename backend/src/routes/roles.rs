@@ -1,5 +1,6 @@
+use crate::params::DeleteRoleParams;
 use crate::{
-    models::{CreateRole, DeleteRoleParams, Role},
+    models::{CreateRole, Role},
     responses::message::Messages,
     AppState,
 };
@@ -64,4 +65,3 @@ async fn delete_rol(state: Data<AppState>, params: web::Path<DeleteRoleParams>) 
         }
     }
 }
-

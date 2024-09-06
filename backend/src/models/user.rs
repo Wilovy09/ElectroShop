@@ -13,3 +13,10 @@ pub struct User {
     pub updated_at: NaiveDateTime,
 }
 
+#[derive(Debug, FromRow, Serialize, Deserialize)]
+pub struct PartialUser {
+    pub id: i64,
+    pub role_id: i64,
+    pub email: String,
+}
+
