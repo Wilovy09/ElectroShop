@@ -7,6 +7,12 @@ use std::env;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TokenStruct {
     pub token: String,
+    pub refresh: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct  RefreshStruct {
+    pub token: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -15,6 +21,7 @@ pub struct Claims {
     pub sub: String,
     pub exp: usize,
     pub iat: usize,
+    pub token_type: String,
     pub user_id: usize,
 }
 
@@ -23,21 +30,19 @@ pub fn get_secret_key() -> String {
     env::var("SECRET_KEY").expect("SECRET_KEY must be set")
 }
 
-pub fn generate_token(iss: String, sub: String, duration_minutes: i64, user_id: usize) -> String {
+pub fn generate_token(iss: String, sub: String, duration_minutes: i64, token_type: String, user_id: usize) -> String {
     let header = Header::new(Algorithm::HS512);
     let encoding_key = EncodingKey::from_secret(get_secret_key().as_bytes());
-
     let exp = (Utc::now() + Duration::minutes(duration_minutes)).timestamp() as usize;
     let iat = Utc::now().timestamp() as usize;
-
     let my_claims = Claims {
         iss,
         sub,
         exp,
         iat,
+        token_type,
         user_id,
     };
-
     encode(&header, &my_claims, &encoding_key).unwrap()
 }
 
