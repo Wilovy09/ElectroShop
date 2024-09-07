@@ -1,8 +1,11 @@
 use actix_web::{web::Data, App, HttpServer};
+mod helpers;
 mod models;
+mod params;
 mod responses;
 mod routes;
 use dotenv::dotenv;
+mod middlewares;
 use sqlx::{sqlite::SqlitePoolOptions, Pool, Sqlite};
 
 pub struct AppState {
@@ -23,6 +26,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(Data::new(AppState { db: pool.clone() }))
             .configure(routes::roles::config)
+            .configure(routes::auth::config)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
