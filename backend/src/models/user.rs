@@ -9,14 +9,17 @@ pub struct User {
     pub full_name: Option<String>,
     pub email: String,
     pub password: String,
+    #[serde(rename = "createdAt")]
     pub created_at: NaiveDateTime,
+    #[serde(rename = "updatedAt")]
     pub updated_at: NaiveDateTime,
 }
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct PartialUser {
-    pub id: i64,
+    pub id: Option<i64>,
     pub role_id: i64,
     pub email: String,
+    pub password: String,
 }
 
