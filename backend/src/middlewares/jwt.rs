@@ -22,7 +22,7 @@ pub struct Claims {
     pub exp: usize,
     pub iat: usize,
     pub token_type: String,
-    pub user_id: Option<i64>,
+    pub user_id: i64,
 }
 
 pub fn get_secret_key() -> String {
@@ -47,7 +47,7 @@ pub fn generate_token(
         exp,
         iat,
         token_type,
-        user_id: Some(user_id as i64),
+        user_id: user_id as i64,
     };
     encode(&header, &my_claims, &encoding_key).unwrap()
 }

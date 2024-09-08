@@ -17,7 +17,7 @@ pub struct User {
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct PartialUser {
-    pub id: Option<i64>,
+    pub id: i64,
     pub role_id: i64,
     pub email: String,
     pub password: String,

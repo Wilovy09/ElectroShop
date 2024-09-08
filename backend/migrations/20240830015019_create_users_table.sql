@@ -1,7 +1,7 @@
 -- Add migration script here
 
 CREATE TABLE User (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   role_id INTEGER NOT NULL,
   full_name TEXT,
   email TEXT NOT NULL UNIQUE,

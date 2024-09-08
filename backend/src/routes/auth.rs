@@ -40,7 +40,7 @@ async fn create_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpRespons
         }
     };
     let email = body.email.clone();
-    match sqlx::query_as!(PartialUser, "INSERT INTO User (`email`, `password`, role_id) VALUES ($1,$2,$3) RETURNING id, role_id, `email`, `password`", email, hashed_password, 2)
+    match sqlx::query!("INSERT INTO User (`email`, `password`, role_id) VALUES ($1,$2,$3) RETURNING id", email, hashed_password, 2)
         .fetch_one(&state.db)
         .await
     {
@@ -49,38 +49,31 @@ async fn create_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpRespons
             let sub = "Client";
             let duration_in_minutes: i64 = 5;
             let refresh_token_duration_in_minutes: i64 = 525600;
-            if let Some(user_id) = user.id {
-                let user_id_usize = user_id as usize;
-                let token = generate_token(
-                    iss.to_string(),
-                    sub.to_string(),
-                    duration_in_minutes,
-                    "token".to_owned(),
-                    user_id_usize, 
-                );
-                let refresh_jwt = generate_token(
-                    iss.to_string(),
-                    sub.to_string(),
-                    refresh_token_duration_in_minutes,
-                    "refresh".to_owned(),
-                    user_id_usize,
-                );
-                let result = validate_token(token.clone());
-                match result {
-                    Ok(_) => HttpResponse::Ok().json(TokenStruct {
-                        token: token.to_string(),
-                        refresh: refresh_jwt.to_string(),
-                    }),
-                    Err(_) => HttpResponse::Unauthorized().json(ErrorMessages {
-                        error_code: 401,
-                        message: "Invalid token".to_string(),
-                    }),
-                }
-            } else {
-                HttpResponse::InternalServerError().json(ErrorMessages {
-                    error_code: 500,
-                    message: "User ID is null".to_string(),
-                })
+            let user_id = user.id as usize;
+            let token = generate_token(
+                iss.to_string(),
+                sub.to_string(),
+                duration_in_minutes,
+                "token".to_owned(),
+                user_id, 
+            );
+            let refresh_jwt = generate_token(
+                iss.to_string(),
+                sub.to_string(),
+                refresh_token_duration_in_minutes,
+                "refresh".to_owned(),
+                user_id,
+            );
+            let result = validate_token(token.clone());
+            match result {
+                Ok(_) => HttpResponse::Ok().json(TokenStruct {
+                    token: token.to_string(),
+                    refresh: refresh_jwt.to_string(),
+                }),
+                Err(_) => HttpResponse::Unauthorized().json(ErrorMessages {
+                    error_code: 401,
+                    message: "Invalid token".to_string(),
+                }),
             }
         }
         Err(e) => {
@@ -113,22 +106,21 @@ async fn login_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpResponse
             let sub = "Client";
             let duration_in_minutes: i64 = 5;
             let refresh_token_duration_in_minutes: i64 = 525600;
-            if let Some(user_id) = user.id {
-                if verify_password(body.password.clone(), user.password) {
-                let user_id_usize = user_id as usize;
+            let user_id = user.id;
+            if verify_password(body.password.clone(), user.password) {
                 let token = generate_token(
                     iss.to_string(),
                     sub.to_string(),
                     duration_in_minutes,
                     "token".to_owned(),
-                    user_id_usize,
+                    user_id as usize,
                 );
                 let refresh_jwt = generate_token(
                     iss.to_string(),
                     sub.to_string(),
                     refresh_token_duration_in_minutes,
                     "refresh".to_owned(),
-                    user_id_usize,
+                    user_id as usize,
                 );
                 let result = validate_token(token.clone());
                 match result {
@@ -145,12 +137,6 @@ async fn login_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpResponse
                 HttpResponse::Unauthorized().json(ErrorMessages {
                     error_code: 401,
                     message: "Invalid credentials.".to_string(),
-                })
-            }
-            } else {
-                HttpResponse::InternalServerError().json(ErrorMessages {
-                    error_code: 500,
-                    message: "User ID is null".to_string(),
                 })
             }
         }
@@ -179,25 +165,17 @@ async fn refresh(refresh_jwt: Option<BearerAuth>) -> HttpResponse {
                 let iss = "ElectroShop";
                 let sub = "Client";
                 let duration_in_minutes: i64 = 5;
-                
-                if let Some(user_id) = c.user_id {
-                    let user_id_usize = user_id as usize;
-                    let result = generate_token(
-                        iss.to_string(),
-                        sub.to_string(),
-                        duration_in_minutes,
-                        "token".to_owned(),
-                        user_id_usize,
-                    );
-                    HttpResponse::Ok().json(RefreshStruct {
-                        token: result.to_string(),
-                    })
-                } else {
-                    HttpResponse::InternalServerError().json(ErrorMessages {
-                        error_code: 500,
-                        message: "User ID is missing.".to_string(),
-                    })
-                }
+                let user_id = c.user_id;
+                let result = generate_token(
+                    iss.to_string(),
+                    sub.to_string(),
+                    duration_in_minutes,
+                    "token".to_owned(),
+                    user_id as usize,
+                );
+                HttpResponse::Ok().json(RefreshStruct {
+                    token: result.to_string(),
+                })
             } else {
                 HttpResponse::Unauthorized().json(ErrorMessages {
                     error_code: 401,
