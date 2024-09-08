@@ -11,7 +11,7 @@ pub struct TokenStruct {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct  RefreshStruct {
+pub struct RefreshStruct {
     pub token: String,
 }
 
@@ -22,7 +22,7 @@ pub struct Claims {
     pub exp: usize,
     pub iat: usize,
     pub token_type: String,
-    pub user_id: usize,
+    pub user_id: Option<i64>,
 }
 
 pub fn get_secret_key() -> String {
@@ -30,7 +30,13 @@ pub fn get_secret_key() -> String {
     env::var("SECRET_KEY").expect("SECRET_KEY must be set")
 }
 
-pub fn generate_token(iss: String, sub: String, duration_minutes: i64, token_type: String, user_id: usize) -> String {
+pub fn generate_token(
+    iss: String,
+    sub: String,
+    duration_minutes: i64,
+    token_type: String,
+    user_id: usize,
+) -> String {
     let header = Header::new(Algorithm::HS512);
     let encoding_key = EncodingKey::from_secret(get_secret_key().as_bytes());
     let exp = (Utc::now() + Duration::minutes(duration_minutes)).timestamp() as usize;
@@ -41,7 +47,7 @@ pub fn generate_token(iss: String, sub: String, duration_minutes: i64, token_typ
         exp,
         iat,
         token_type,
-        user_id,
+        user_id: Some(user_id as i64),
     };
     encode(&header, &my_claims, &encoding_key).unwrap()
 }
@@ -52,6 +58,6 @@ pub fn validate_token(token: String) -> Result<Claims, jsonwebtoken::errors::Err
     let result = decode::<Claims>(&token, &decoding_key, &validation);
     match result {
         Ok(c) => Ok(c.claims),
-        Err(e) => Err(e)
+        Err(e) => Err(e),
     }
 }
