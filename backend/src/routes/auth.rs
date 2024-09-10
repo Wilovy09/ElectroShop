@@ -40,9 +40,14 @@ async fn create_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpRespons
         }
     };
     let email = body.email.clone();
-    match sqlx::query!("INSERT INTO User (`email`, `password`, role_id) VALUES ($1,$2,$3) RETURNING id", email, hashed_password, 2)
-        .fetch_one(&state.db)
-        .await
+    match sqlx::query!(
+        "INSERT INTO User (`email`, `password`, role_id) VALUES ($1,$2,$3) RETURNING id",
+        email,
+        hashed_password,
+        2
+    )
+    .fetch_one(&state.db)
+    .await
     {
         Ok(user) => {
             let iss = "ElectroShop";
@@ -55,7 +60,7 @@ async fn create_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpRespons
                 sub.to_string(),
                 duration_in_minutes,
                 "token".to_owned(),
-                user_id, 
+                user_id,
             );
             let refresh_jwt = generate_token(
                 iss.to_string(),
@@ -189,4 +194,3 @@ async fn refresh(refresh_jwt: Option<BearerAuth>) -> HttpResponse {
         }),
     }
 }
-
