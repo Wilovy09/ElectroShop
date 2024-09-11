@@ -27,6 +27,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(AppState { db: pool.clone() }))
             .configure(routes::roles::config)
             .configure(routes::auth::config)
+            .configure(routes::categories::config)
     })
     .bind(("127.0.0.1", 8080))?
     .run()

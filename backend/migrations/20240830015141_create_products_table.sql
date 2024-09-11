@@ -1,7 +1,7 @@
 -- Add migration script here
 
 CREATE TABLE Product (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   category_id INTEGER NOT NULL,
   name TEXT NOT NULL,
   image TEXT NOT NULL, -- Almacena la imagen en formato Base64

@@ -1,7 +1,7 @@
 -- Add migration script here
 
 CREATE TABLE Cards (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   user_id INTEGER NOT NULL,
   card_number TEXT NOT NULL,
   expiration TEXT NOT NULL CHECK(LENGTH(expiration) = 5), -- Formato 'MM/YY'
