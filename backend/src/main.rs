@@ -28,6 +28,7 @@ async fn main() -> std::io::Result<()> {
             .configure(routes::roles::config)
             .configure(routes::auth::config)
             .configure(routes::categories::config)
+            .configure(routes::products::config)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
