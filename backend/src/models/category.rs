@@ -7,3 +7,7 @@ pub struct Category {
     pub name: String,
 }
 
+#[derive(Debug, FromRow, Serialize, Deserialize)]
+pub struct CreateCategory {
+    pub name: String,
+}

@@ -8,7 +8,16 @@ pub struct Product {
     pub name: String,
     pub image: String,
     pub price: f64,
-    pub units: i32,
-    pub deleted: bool,
+    pub units: i64,
+    pub deleted: i64, // 0 false | 1 true
 }
 
+#[derive(Debug, FromRow, Serialize, Deserialize)]
+pub struct CreateProduct {
+    pub category_id: i64,
+    pub name: String,
+    pub image: String,
+    pub price: f64,
+    pub units: i64,
+    pub deleted: i64, // 0 false | 1 true
+}

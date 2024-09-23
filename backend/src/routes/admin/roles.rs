@@ -10,7 +10,7 @@ use actix_web::{
     HttpResponse,
 };
 use sqlx;
-
+  
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(create_role).service(delete_rol);
 }
