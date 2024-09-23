@@ -1,5 +1,4 @@
 use crate::{
-    middlewares::jwt::validator,
     models::category::{Category, CreateCategory},
     params::PartialCategorieParams,
     responses::message::{ErrorMessages, Messages},
@@ -11,20 +10,9 @@ use actix_web::{
     HttpResponse,
 };
 use actix_web_grants::protect;
-use actix_web_httpauth::{
-    extractors::bearer::Config as BearerConfig, middleware::HttpAuthentication,
-};
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    let auth = HttpAuthentication::with_fn(validator);
-    cfg.app_data(BearerConfig::default().realm("jwt")).service(
-        web::scope("/admin")
-            .wrap(auth)
-            .service(create)
-            .service(get)
-            .service(delete)
-            .service(edit),
-    );
+    cfg.service(create).service(get).service(delete).service(edit);
 }
 
 #[post("/categories")]
@@ -66,7 +54,6 @@ async fn get(state: Data<AppState>) -> HttpResponse {
 #[delete("/categories/{id}")]
 #[protect("Administrador")]
 async fn delete(state: Data<AppState>, params: web::Path<PartialCategorieParams>) -> HttpResponse {
-    println!("{}", params.id);
     match sqlx::query!("DELETE FROM Category WHERE id = $1", params.id)
         .execute(&state.db)
         .await
