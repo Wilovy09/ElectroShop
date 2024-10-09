@@ -1,5 +1,5 @@
 use crate::{
-    models::product::{CreateProduct, Product},
+    models::product::CreateProduct,
     responses::message::ErrorMessages,
     AppState,
 };

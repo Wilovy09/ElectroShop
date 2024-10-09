@@ -1,11 +1,18 @@
-import React, { useState, useMemo, FormEvent } from "react";
+import React, { useState, useMemo, FormEvent, useTransition } from "react";
+import Loader from "../../components/Loader";
+import handleError from "../../helper/handleError";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
+  const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
+
   const [authAction, setAuthAction] = useState<"login" | "register">("login");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [needsEmail, setNeedsEmail] = useState<boolean>(false);
   const [needsPassword, setNeedsPassword] = useState<boolean>(false);
   const [needsFullName, setNeedsFullName] = useState<boolean>(false);
@@ -16,27 +23,68 @@ export default function AuthPage() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    let valid = true;
     if (!email) {
       setNeedsEmail(true);
+      valid = false;
+    }
+    if (!email.includes("@") && email) {
+      setNeedsEmail(true);
+      valid = false;
+      handleError("Correo no valido");
     }
     if (!password) {
       setNeedsPassword(true);
+      valid = false;
     }
     if (!fullName) setNeedsFullName(true);
 
     if (authAction == "register" && !fullName) {
+      valid = false;
+    }
+    if (!valid) {
       return;
     }
-    if (!email || !password) return;
-    console.log(`You tried to ${authAction}`);
-    console.log({ email, password, fullName });
+    auth();
   };
+  async function auth() {
+    setIsLoading(true);
+    try {
+      //if (authAction === "login") login();else register();
+      startTransition(() => {
+        navigate("/");
+      });
+    } catch (e) {
+      handleError(e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="text-zinc-400 flex justify-center max-sm:items-end sm:items-center bg-gradient-to-tr from-gray-800 to-zinc-950 w-screen h-screen relative overflow-hidden">
       <div className="bg-slate-800 w-full max-w-md p-8 rounded-xl z-10 transition-all duration-300 ease-in-out">
-        <div className="w-32 h-32 bg-black mx-auto -mt-24 rounded-full"></div>
-        <div className="w-full mt-2 mb-6">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-32 h-32 text-white mx-auto -mt-24 rounded-full bg-slate-800"
+        >
+          <path
+            fillRule="evenodd"
+            d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+            clipRule="evenodd"
+          />
+        </svg>
+
+        <div className="text-center">
+          <h1 className="text-white -mt-4 mb-4 font-mono text-5xl font-bold">
+            Electroshop
+          </h1>
+        </div>
+
+        <div className="w-full mt-2 mb-4">
           <button
             onClick={() => setAuthAction("login")}
             className={`w-1/2 p-1 relative overflow-hidden duration-300 ${
@@ -69,7 +117,7 @@ export default function AuthPage() {
           <div
             className={`transition-all duration-300 ease-in-out overflow-hidden ${
               authAction === "register"
-                ? "max-h-20 opacity-100 mb-8"
+                ? "max-h-20 opacity-100 mb-6"
                 : "max-h-0 opacity-0 "
             }`}
           >
@@ -90,27 +138,31 @@ export default function AuthPage() {
               }`}
               type="text"
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                setNeedsFullName(false);
+              }}
             />
           </div>
 
-          <div className="mb-4">
+          <div className="mb-2">
             <label
               htmlFor="email"
-              className={`block mb-1 ${
-                needsEmail && !email ? "text-red-500" : ""
-              }`}
+              className={`block mb-1 ${needsEmail ? "text-red-500" : ""}`}
             >
               Correo
             </label>
             <input
               id="email"
               className={`w-full text-white rounded-md border p-1.5 outline-none bg-slate-600 ${
-                needsEmail && !email ? " border-red-600" : "border-transparent"
+                needsEmail ? " border-red-600" : "border-transparent"
               }`}
               type="text"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setNeedsEmail(false);
+              }}
             />
           </div>
 
@@ -130,7 +182,7 @@ export default function AuthPage() {
                   ? " border-red-600"
                   : "border-transparent"
               }`}
-              type="text"
+              type="password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -138,12 +190,17 @@ export default function AuthPage() {
               }}
             />
           </div>
-
-          <input
-            className="bg-zinc-950 text-white hover:text-zinc-400 hover:scale-95 duration-150 ease-in-out w-40 mx-auto cursor-pointer rounded-xl py-2 mt-4"
-            type="submit"
-            value={authAction === "login" ? "Iniciar Sesión" : "Registrarse"}
-          />
+          {isLoading || isPending ? (
+            <div className="w-10 h-10 mx-auto mt-4">
+              <Loader />
+            </div>
+          ) : (
+            <input
+              className="bg-zinc-950 text-white hover:text-zinc-400 hover:scale-95 duration-150 ease-in-out w-40 mx-auto cursor-pointer rounded-xl py-2 mt-4"
+              type="submit"
+              value="Continuar"
+            />
+          )}
         </form>
       </div>
       {stars}

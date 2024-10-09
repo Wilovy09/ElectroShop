@@ -22,7 +22,9 @@ pub struct AppState {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-    let database_url = std::env::var("DATABASE_URL").expect("No se encontro DATABASE_URL");
+    
+    let database_url = std::env::var("DATABASE_URL").expect("Unable to find DATABASE_URL");    
+
     let pool = SqlitePoolOptions::new()
         .max_connections(5)
         .connect(&database_url)
