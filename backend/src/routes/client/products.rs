@@ -24,4 +24,4 @@ async fn get(state: Data<AppState>) -> HttpResponse {
 }
 
 // #[get("/products/:id")]
-// async fn getProduct(state: Data<AppState>, param: web::Path<i64>)
+// async fn getProduct(state: Data<AppState>, param: web::Path<i64>){}

@@ -1,7 +1,5 @@
 use crate::{
-    models::product::CreateProduct,
-    responses::message::ErrorMessages,
-    AppState,
+    models::{product::CreateProduct, Product}, params::PartialProductParams, responses::message::ErrorMessages, AppState
 };
 use actix_web::{
     delete, post, put,
