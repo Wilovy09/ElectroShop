@@ -2,7 +2,8 @@
 
 ## Backend
 
-> [!NOTE] > [Notas sobre actix](https://github.com/Wilovy09/Actix-Desde-0)
+> [!NOTE]
+> [Notas sobre actix](https://github.com/Wilovy09/Actix-Desde-0)
 
 ### Instalar Cargo watch
 
