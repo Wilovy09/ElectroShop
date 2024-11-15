@@ -44,11 +44,13 @@ async fn main() -> std::io::Result<()> {
             .service(hc)
             .configure(routes::client::auth::config)
             .configure(routes::client::categories::config)
+            .configure(routes::client::products::config)
             //Rutas Admin
             .service(
                 web::scope("/admin")
                     .wrap(auth)
-                    .configure(routes::admin::categories::config),
+                    .configure(routes::admin::categories::config)
+                    .configure(routes::admin::products::config)
             )
     })
     .bind(("0.0.0.0", 8080))?
