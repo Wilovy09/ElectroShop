@@ -1,4 +1,4 @@
-use actix_web::{get, web::Data, App, HttpResponse, HttpServer};
+use actix_web::{get, web::{self, Data}, App, HttpResponse, HttpServer};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
 use middlewares::jwt::validator;
@@ -40,6 +40,13 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(AppState { db: pool.clone() }))
             .service(hc)
             .configure(routes::client::auth::config)
+            .configure(routes::client::categories::config)
+            //Rutas Admin
+            .service(
+                web::scope("/admin")
+                    .wrap(auth)
+                    .configure(routes::admin::categories::config)
+            )
     })
     .bind(("0.0.0.0", 8080))?
     .run()
