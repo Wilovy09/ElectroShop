@@ -22,6 +22,7 @@ pub struct Claims {
     pub iat: usize,
     pub token_type: String,
     pub user_id: i64,
+    pub user_role: String,
 }
 
 pub fn get_secret_key() -> String {
@@ -34,6 +35,7 @@ pub fn generate_token(
     duration_minutes: i64,
     token_type: String,
     user_id: usize,
+    user_role: String,
 ) -> String {
     let header = Header::new(Algorithm::HS512);
     let encoding_key = EncodingKey::from_secret(get_secret_key().as_bytes());
@@ -45,6 +47,7 @@ pub fn generate_token(
         iat,
         token_type,
         user_id: user_id as i64,
+        user_role: user_role as String,
     };
     encode(&header, &my_claims, &encoding_key).unwrap()
 }
@@ -87,7 +90,7 @@ pub async fn validator(
                     match role.as_str() {
                         "Administrador" => req.attach(vec!["Administrador".to_string()]),
                         "Cliente" => req.attach(vec!["Cliente".to_string()]),
-                        &_ => todo!(),
+                        &_ => unreachable!(),
                     }
                     Ok(req)
                 }

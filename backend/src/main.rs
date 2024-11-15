@@ -1,4 +1,8 @@
-use actix_web::{get, web::{self, Data}, App, HttpResponse, HttpServer};
+use actix_web::{
+    get,
+    web::{self, Data},
+    App, HttpResponse, HttpServer,
+};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
 use middlewares::jwt::validator;
@@ -25,7 +29,6 @@ async fn hc() -> HttpResponse {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-
     let database_url = std::env::var("DATABASE_URL").expect("Unable to find DATABASE_URL");
 
     let pool = SqlitePoolOptions::new()
@@ -45,7 +48,7 @@ async fn main() -> std::io::Result<()> {
             .service(
                 web::scope("/admin")
                     .wrap(auth)
-                    .configure(routes::admin::categories::config)
+                    .configure(routes::admin::categories::config),
             )
     })
     .bind(("0.0.0.0", 8080))?
