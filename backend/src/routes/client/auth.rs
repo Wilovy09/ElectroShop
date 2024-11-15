@@ -40,7 +40,7 @@ async fn create_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpRespons
     // Change to "Administrador" to create administrator account.
     let role = "Cliente".to_string();
     match sqlx::query!(
-        "INSERT INTO User (`email`, `password`, role) VALUES ($1,$2,$3) RETURNING id",
+        "INSERT INTO User (`email`, `password`, role) VALUES ($1,$2,$3) RETURNING id, role",
         email,
         hashed_password,
         role
@@ -52,12 +52,13 @@ async fn create_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpRespons
             let iss = "ElectroShop";
             let duration_in_minutes: i64 = 525600;
             let user_id = user.id as usize;
-
+            let user_role = user.role;
             let token = generate_token(
                 iss.to_string(),
                 duration_in_minutes,
                 "token".to_owned(),
                 user_id,
+                user_role,
             );
 
             let result = validate_token(token.clone());
@@ -97,6 +98,7 @@ async fn login_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpResponse
             let iss = "ElectroShop";
             let duration_in_minutes: i64 = 525600;
             let user_id = user.id;
+            let user_role = user.role;
 
             if verify_password(body.password.clone(), user.password) {
                 let token = generate_token(
@@ -104,6 +106,7 @@ async fn login_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpResponse
                     duration_in_minutes,
                     "token".to_owned(),
                     user_id as usize,
+                    user_role,
                 );
                 let result = validate_token(token.clone());
                 match result {
