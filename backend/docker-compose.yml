@@ -8,7 +8,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - PWD=/usr/src/app
       - DATABASE_URL=sqlite:///usr/src/app/temp/sqlx.db
       - SECRET_KEY=8kMtmZpwICmmASOwqaRtGLVHYphQ4s3oWPBgK66zjNyfqDbNoT
     volumes:
