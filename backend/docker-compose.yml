@@ -1,21 +1,16 @@
-FROM rust:alpine3.19 AS builder
-
-RUN apk add --no-cache musl-dev openssl-dev
-
-WORKDIR /usr/src/app
-
-COPY . .
-
-RUN cargo build --release
-
-FROM alpine:3.19
-
-RUN apk add --no-cache ca-certificates
-
-WORKDIR /usr/local/bin
-
-COPY --from=builder /usr/src/app/ .
-
-EXPOSE 8080
-
-CMD ["./target/release/backend"]
+services:
+  app:
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rust_app
+    ports:
+      - "8080:8080"
+    environment:
+      - PWD=/usr/src/app
+      - DATABASE_URL=sqlite:///usr/src/app/temp/sqlx.db
+      - SECRET_KEY=8kMtmZpwICmmASOwqaRtGLVHYphQ4s3oWPBgK66zjNyfqDbNoT
+    volumes:
+      - .:/usr/src/app
+    command: ["./target/release/backend"]
