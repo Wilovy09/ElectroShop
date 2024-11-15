@@ -1,8 +1,15 @@
 use actix_web::{get, web::Data, App, HttpResponse, HttpServer};
+use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
-mod responses;
-use crate::responses::message::Messages;
+use middlewares::jwt::validator;
 use sqlx::{sqlite::SqlitePoolOptions, Pool, Sqlite};
+mod helpers;
+mod middlewares;
+mod models;
+mod params;
+mod responses;
+mod routes;
+use crate::responses::message::Messages;
 
 pub struct AppState {
     db: Pool<Sqlite>,
@@ -28,9 +35,11 @@ async fn main() -> std::io::Result<()> {
         .expect("Error al crear la conexión a la base de datos");
 
     HttpServer::new(move || {
+        let auth = HttpAuthentication::with_fn(validator);
         App::new()
             .app_data(Data::new(AppState { db: pool.clone() }))
             .service(hc)
+            .configure(routes::client::auth::config)
     })
     .bind(("0.0.0.0", 8080))?
     .run()
