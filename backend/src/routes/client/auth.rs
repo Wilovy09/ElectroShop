@@ -12,7 +12,6 @@ use actix_web::{
     web::{self, Data, Json},
     HttpResponse,
 };
-// use actix_web_httpauth::extractors::bearer::BearerAuth;
 use sqlx;
 use std::borrow::Cow;
 

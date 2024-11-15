@@ -3,6 +3,7 @@ use actix_web::{
     web::{self, Data},
     App, HttpResponse, HttpServer,
 };
+use actix_cors::Cors;
 use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
 use middlewares::jwt::validator;
@@ -49,6 +50,12 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/admin")
                     .wrap(auth)
                     .configure(routes::admin::categories::config),
+            )
+            .wrap(
+                Cors::default()
+                    .allow_any_origin()
+                    .allow_any_method()
+                    .allow_any_header(),
             )
     })
     .bind(("0.0.0.0", 8080))?
