@@ -1,3 +1,4 @@
 pub mod user;
-pub use user::{PartialUser, DataUser};
+pub mod category;
+pub use user::PartialUser;
 
