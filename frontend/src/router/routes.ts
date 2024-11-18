@@ -15,6 +15,12 @@ const routes = [
         name: "Home",
         component: () => import("../pages/HomePage/Home.vue"),
       },
+      {
+        path: "/product/:id",
+        name: "product",
+        component: () =>
+          import("../pages/EspecificProductPage/SpecificProductPage.vue"),
+      },
     ],
   },
 ];

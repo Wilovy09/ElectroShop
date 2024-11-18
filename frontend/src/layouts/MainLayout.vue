@@ -21,7 +21,7 @@ import showSuccedSwal from "../helpers/succedSwal";
 import showConfirmationSwal from "../helpers/confirmationSwal";
 
 const router = useRouter();
-const isAdmin = useUserStore().userRole == "Administrador";
+const isAdmin = useUserStore().userRole === "Administrador";
 
 const shouldShowLogoutButton = ref(false);
 
@@ -104,10 +104,10 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="flex flex-grow-0 w-screen h-screen">
-    <!-- Overlay for small screens -->
+    <!-- Overlay for lgall screens -->
     <div
       v-if="isSidebarOpen"
-      class="fixed inset-0 backdrop-blur-sm z-20 md:hidden duration-300 transition-all"
+      class="fixed inset-0 backdrop-blur-lg z-20 lg:hidden duration-300 transition-all"
       @click="isSidebarOpen = false"
     ></div>
 
@@ -117,7 +117,7 @@ onUnmounted(() => {
       :class="[
         'fixed inset-y-0 left-0 z-30 min-w-64 overflow-hidden bg-slate-800 transform transition-transform duration-300 ease-in-out shadow-xl shadow-zinc-950/50',
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'md:relative md:translate-x-0',
+        'lg:relative lg:translate-x-0',
       ]"
     >
       <!-- Franja simulando la continuación de la navbar -->
@@ -127,7 +127,7 @@ onUnmounted(() => {
         <h2 class="text-xl font-semibold text-white">ElectroShop</h2>
         <button
           @click="toggleSidebar"
-          class="md:hidden text-zinc-400 hover:text-white"
+          class="lg:hidden text-zinc-400 hover:text-white"
         >
           <XMarkIcon class="size-6" />
         </button>
@@ -258,7 +258,7 @@ onUnmounted(() => {
       <nav class="bg-slate-900 min-h-16 px-4 flex items-center justify-between">
         <button
           @click="toggleSidebar"
-          class="text-zinc-400 hover:text-white md:hidden"
+          class="text-zinc-400 hover:text-white lg:hidden"
         >
           <Bars3Icon class="size-6" />
         </button>
