@@ -7,13 +7,13 @@ const routes = [
   {
     path: "/",
     name: "Layout",
-    meta: { requiresAuth: true },
-    //component: ()=> import ("../layouts/MainLayout.vue")
+    //meta: { requiresAuth: true },
+    component: () => import("../layouts/MainLayout.vue"),
     children: [
       {
         path: "",
         name: "Home",
-        component: () => import("../pages/Home.vue"),
+        component: () => import("../pages/HomePage/Home.vue"),
       },
     ],
   },
