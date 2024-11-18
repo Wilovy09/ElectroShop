@@ -1,15 +1,19 @@
 import { defineStore } from "pinia";
 import { AuthRepository } from "../repositories/authRepository";
 import { ref } from "vue";
-import { jwtDecode } from "jwt-decode";
-import { useRouter } from "vue-router";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+import { Router } from "vue-router";
 
-const router = useRouter();
+type userInfo = {
+  user_id: string;
+  user_role: "Administrador" | "Cliente";
+};
 
 const authRepository = AuthRepository;
+
 export const useUserStore = defineStore("user", () => {
   const token = ref<string | null>(getToken());
-  const userId = ref<number | null>(getUserId());
+  const userId = ref<string | null>(getUserId());
   const userRole = ref<"Administrador" | "Cliente" | null>(getUserRole());
 
   async function login(email: string, password: string) {
@@ -32,7 +36,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   async function setUser() {
-    const jwt = jwtDecode(token.value!);
+    const jwt = jwtDecode(token.value!) as JwtPayload & userInfo;
     userId.value = jwt.user_id;
     userRole.value = jwt.user_role;
     localStorage.setItem("userId", JSON.stringify(jwt.user_id));
@@ -47,7 +51,7 @@ export const useUserStore = defineStore("user", () => {
     const userId = localStorage.getItem("userId");
     return userId ? JSON.parse(userId) : null;
   }
-  function logout() {
+  function logout(router: Router) {
     token.value = null;
     userId.value = null;
     userRole.value = null;
