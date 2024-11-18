@@ -176,7 +176,7 @@ onUnmounted(() => {
         </div>
         <div
           :class="[
-            'w-full bg-zinc-950 absolute bottom-0 transition-all duration-300',
+            'w-full bg-zinc-950 rounded-t-md absolute bottom-0 transition-all duration-300',
             shouldShowLogoutButton ? '' : 'translate-y-16',
           ]"
           @mouseover="shouldShowLogoutButton = true"
