@@ -4,8 +4,11 @@ import { onMounted, ref } from "vue";
 import { apiRequest } from "../../services/api";
 import {
     type Product,
-    fakeProduct as productFallback,
+    fakesProducts as productFallback,
 } from "../../entities/Product";
+import { useCartStore } from "../../stores/useCartStore";
+
+const cartStore = useCartStore();
 
 const route = useRoute();
 const productId = ref<number | null>(null);
@@ -18,11 +21,26 @@ async function getProduct() {
             `/products/${productId.value}`,
             "GET",
         );
-        product.value = response ?? productFallback;
+
+        if (response) {
+            product.value = response;
+        } else {
+            product.value =
+                productFallback.find((p) => p.id === productId.value) ?? null;
+        }
+
+        if (!product.value) {
+            product.value = null;
+        }
     } catch (error) {
         console.error("Error fetching product:", error);
-        product.value = productFallback;
+        product.value =
+            productFallback.find((p) => p.id === productId.value) ?? null;
     }
+}
+
+function addToCart(product: Product) {
+    cartStore.addToCart(product, 1); // Aquí 'product' es la prop recibida
 }
 
 onMounted(async () => {
@@ -73,6 +91,7 @@ onMounted(async () => {
                         Comprar
                     </button>
                     <button
+                        @click="addToCart(product)"
                         class="w-full px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition font-semibold"
                     >
                         Agregar al carrito
