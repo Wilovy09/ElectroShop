@@ -5,6 +5,10 @@
 > [!NOTE]
 > [Notas sobre actix](https://github.com/Wilovy09/Actix-Desde-0)
 
+```sh
+source .env && code .
+```
+
 ### Instalar Cargo watch
 
 ```sh
