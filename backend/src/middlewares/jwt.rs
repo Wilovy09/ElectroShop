@@ -4,7 +4,6 @@ use actix_web::{dev::ServiceRequest, error, Error};
 use actix_web_grants::authorities::AttachAuthorities;
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use chrono::{Duration, Utc};
-use dotenv::dotenv;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use sqlx::Error as SqlxError;
