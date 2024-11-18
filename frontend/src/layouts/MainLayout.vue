@@ -101,7 +101,7 @@ onUnmounted(() => {
                         <p>Inicio</p>
                     </RouterLink>
                     <RouterLink
-                        :to="{ name: '' }"
+                        :to="{ name: 'cart' }"
                         class="w-full flex items-center border-y border-slate-600 p-4 text-left hover:text-white hover:border-white transition-all duration-300"
                     >
                         <ShoppingCartIcon class="size-6 mr-2" />
