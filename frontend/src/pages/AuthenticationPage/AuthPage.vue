@@ -104,10 +104,8 @@ const handleSubmit = async () => {
     isLoading.value = true;
     if (authAction.value === "login") {
       await userStore.login(email.value, password.value);
-      console.log("login");
     } else {
       await userStore.register(email.value, password.value);
-      console.log("register");
     }
     router.push("/");
   } catch (e) {
