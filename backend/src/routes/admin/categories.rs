@@ -1,7 +1,7 @@
 // CREATE & DELETE
 use crate::{
 	models::category::CreateCategory,
-	params::category::PartialCategorieParams,
+	params::category::PartialCategoryParams,
 	responses::message::Messages,
 	AppState,
 };
@@ -38,7 +38,11 @@ async fn create(state: Data<AppState>, body: Json<CreateCategory>) -> HttpRespon
 
 #[delete("/categories/{id}")]
 #[protect("Administrador")]
+<<<<<<< HEAD
 async fn delete(state: Data<AppState>, params: web::Path<PartialCategorieParams>) -> HttpResponse {
+=======
+async fn delete(state: Data<AppState>, params: web::Path<PartialCategoryParams>) -> HttpResponse {
+>>>>>>> develop
 	match sqlx::query!("DELETE FROM Category WHERE id = $1", params.id)
 		 .execute(&state.db)
 		 .await
