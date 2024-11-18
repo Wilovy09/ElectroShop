@@ -26,7 +26,6 @@ pub struct Claims {
 }
 
 pub fn get_secret_key() -> String {
-    dotenv().ok();
     env::var("SECRET_KEY").expect("SECRET_KEY must be set")
 }
 
