@@ -6,6 +6,6 @@ export class AuthRepository {
   }
 
   public static async register(email: string, password: string) {
-    return await apiRequest("/user", "POST", { email, password });
+    return await apiRequest("/register", "POST", { email, password });
   }
 }
