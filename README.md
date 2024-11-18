@@ -1,5 +1,8 @@
 # ElectroShop
 
+> [!NOTE]
+> Usa GitBash si estas en windows!!!
+
 ## Backend
 
 > [!NOTE]
