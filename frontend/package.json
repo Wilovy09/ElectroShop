@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.1.5",
     "autoprefixer": "^10.4.20",
+    "jwt-decode": "^4.0.0",
     "pinia": "^2.2.6",
     "postcss": "^8.4.49",
     "sweetalert2": "^11.14.5",

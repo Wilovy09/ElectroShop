@@ -39,6 +39,7 @@ async fn create(state: Data<AppState>, body: Json<CreateCategory>) -> HttpRespon
 #[delete("/categories/{id}")]
 #[protect("Administrador")]
 async fn delete(state: Data<AppState>, params: web::Path<PartialCategoryParams>) -> HttpResponse {
+
 	match sqlx::query!("DELETE FROM Category WHERE id = $1", params.id)
 		 .execute(&state.db)
 		 .await
