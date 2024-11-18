@@ -14,6 +14,11 @@ import {
 import { useUserStore } from "../stores/useUserStore";
 import { useRouter } from "vue-router";
 import { MinusIcon } from "@heroicons/vue/24/solid";
+import { categoriesRepository } from "../repositories/categoriesRepository";
+import handleError from "../helpers/handleError";
+import { showInputSwal } from "../helpers/inputSwal";
+import showSuccedSwal from "../helpers/succedSwal";
+import showConfirmationSwal from "../helpers/confirmationSwal";
 
 const router = useRouter();
 const isAdmin = useUserStore().userRole == "Administrador";
@@ -24,17 +29,54 @@ const isSidebarOpen = ref(false);
 const sidebarRef = ref<HTMLElement | null>(null);
 const areCategoriesShown = ref(false);
 
-const categories = ref<{ id: string; name: string }[]>([
-  { id: "1", name: "Electronica" },
-  { id: "2", name: "Electronica" },
-  { id: "3", name: "Electronica" },
-  { id: "4", name: "Electronica" },
-  { id: "5", name: "Electronica" },
-]);
+const categories = ref<{ id: number; name: string }[] | null>(null);
+
+async function getAllCategories() {
+  try {
+    categories.value = await categoriesRepository.getCategories();
+  } catch (e) {
+    categories.value = null;
+  }
+}
 
 //agregar esto a la función donde se obtienen las categorias
 function getCategoriesSectionHeight() {
+  if (!categories.value) return 0;
   return categories.value.length * 8 + 3.5 + (isAdmin ? 8 : 0);
+}
+
+async function showSwal() {
+  try {
+    const input = await showInputSwal("Nombre de la categoría");
+    if (!input) return;
+    categories.value?.map((value) => {
+      if (value.name === input) throw new Error("Ya existe esta categoría");
+    });
+    const response = await categoriesRepository.addCategories(input);
+    categories.value?.push(response);
+    showSuccedSwal("Categoría creada con exito");
+  } catch (e) {
+    handleError(e);
+  }
+}
+
+async function showWarningSwal(categoryId: number) {
+  try {
+    const response = await showConfirmationSwal(
+      "Eliminar categoría",
+      "Todos los productos de esta categoría serán eliminados"
+    );
+    if (response !== true) return;
+    await categoriesRepository.deleteCategory(categoryId);
+
+    if (categories.value)
+      categories.value = categories.value.filter((value) => {
+        if (value.id !== categoryId) return value;
+      });
+    showSuccedSwal("Categoría eliminada con exito");
+  } catch (e) {
+    handleError(e);
+  }
 }
 
 function toggleCategories() {
@@ -51,7 +93,8 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await getAllCategories();
   document.addEventListener("mousedown", handleClickOutside);
 });
 
@@ -115,6 +158,7 @@ onUnmounted(() => {
             <p>Compras</p>
           </RouterLink>
           <div
+            v-if="categories || isAdmin"
             class="w-full border-y border-slate-600 hover:border-white transition-all duration-300 ease-in-out"
           >
             <button
@@ -158,7 +202,7 @@ onUnmounted(() => {
                   ><button
                     v-if="isAdmin"
                     :disabled="!areCategoriesShown"
-                    @click="console.log('eliminado')"
+                    @click="showWarningSwal(category.id)"
                     class="bg-white/10 mr-2 p-0.5 backdrop-blur-md rounded-full"
                   >
                     <MinusIcon class="size-4" />
@@ -166,6 +210,7 @@ onUnmounted(() => {
                 </div>
                 <button
                   v-if="isAdmin"
+                  @click="showSwal()"
                   :disabled="!areCategoriesShown"
                   class="hover:text-white bg-slate-950 rounded-lg w-fit pl-6 pr-2 py-1 my-0.5"
                 >
