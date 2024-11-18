@@ -5,9 +5,11 @@ import handleError from "../../helpers/handleError";
 import { UserCircleIcon } from "@heroicons/vue/24/solid";
 import StarBackground from "./components/StarBackground.vue";
 import PasswordDetails from "./components/PasswordDetails.vue";
+import { useUserStore } from "../../stores/useUserStore";
+import Loader from "./components/Loader.vue";
 
 const router = useRouter();
-// const userStore = useUserStore();
+const userStore = useUserStore();
 
 const authAction = ref<"login" | "register">("login");
 const email = ref("");
@@ -34,68 +36,82 @@ const isValidPassword = computed(
     isLengthValid.value && isUppercaseValid.value && isSpecialCharValid.value
 );
 
-// Form submission handler
+function validateEmail(email: string) {
+  if (!email) return "Ingrese un correo";
+  if (!email.includes("@")) return "Correo no válido";
+  return null;
+}
+
+function validatePassword(password: string) {
+  if (!password) return "Ingrese una contraseña";
+
+  return null;
+}
+
+function validatePasswordOnRegister(password: string) {
+  if (!lengthRegex.test(password))
+    return "La contraseña debe contener al menos 8 caracteres";
+  if (!uppercaseRegex.test(password))
+    return "La contraseña debe contener al menos una letra mayúscula";
+  if (!specialCharRegex.test(password))
+    return "La contraseña debe contener al menos un carácter especial";
+  return null;
+}
+
+function validateRepeatedPassword(password: string, repeatedPassword: string) {
+  if (!repeatedPassword) return "Debe repetir la contraseña";
+  if (password !== repeatedPassword) return "La contraseña no coincide";
+  return null;
+}
+
 const handleSubmit = async () => {
-  let valid = true;
+  const errors = ref<{
+    email?: string;
+    password?: string;
+    repeatedPassword?: string;
+  }>({});
 
-  if (!email.value) {
-    needsEmail.value = true;
-    valid = false;
-  }
+  const emailError = validateEmail(email.value);
+  if (emailError) errors.value.email = emailError;
 
-  if (!password.value) {
-    needsPassword.value = true;
-    valid = false;
-  }
-  if (!email.value.includes("@") && email.value) {
-    needsEmail.value = true;
-    valid = false;
-    handleError("Correo no valido");
-  }
+  const passwordError = validatePassword(password.value);
+  if (passwordError) errors.value.password = passwordError;
+
   if (authAction.value === "register") {
-    hasTriedToRegister.value = true;
-    if (
-      repeatedPassword.value !== password.value ||
-      (password.value && !repeatedPassword.value)
-    ) {
-      wrongRepeatedPassword.value = true;
-      handleError("La contraseña no coincide");
-      valid = false;
-    }
-    if (!repeatedPassword.value) {
-      wrongRepeatedPassword.value = true;
-      valid = false;
-    }
-    if (!lengthRegex.test(password.value)) {
-      needsPassword.value = true;
-      handleError("La contraseña debe contener al menos 8 caracteres");
-      valid = false;
-    }
-    if (!uppercaseRegex.test(password.value)) {
-      needsPassword.value = true;
-      handleError("La contraseña debe contener al menos una letra mayúscula");
-      valid = false;
-    }
-    if (!specialCharRegex.test(password.value)) {
-      needsPassword.value = true;
-      handleError("La contraseña debe contener al menos un carácter especial");
-      valid = false;
-    }
+    const passwordErrorRegister = validatePasswordOnRegister(password.value);
+    const repeatedPasswordError = validateRepeatedPassword(
+      password.value,
+      repeatedPassword.value
+    );
+    if (passwordErrorRegister) errors.value.password = passwordErrorRegister;
+    if (repeatedPasswordError)
+      errors.value.repeatedPassword = repeatedPasswordError;
   }
 
-  if (!valid) return;
+  if (Object.keys(errors.value).length > 0) {
+    needsEmail.value = Boolean(errors.value.email);
+    needsPassword.value = Boolean(errors.value.password);
+    wrongRepeatedPassword.value = Boolean(errors.value.repeatedPassword);
+
+    Object.values(errors.value).forEach(function (message) {
+      console.log(message);
+      handleError(message);
+    });
+    return;
+  }
 
   try {
     isLoading.value = true;
     if (authAction.value === "login") {
-      //   await userStore.login(email.value, password.value);
+      await userStore.login(email.value, password.value);
       console.log("login");
     } else {
-      //   await userStore.register(email.value, password.value);
+      await userStore.register(email.value, password.value);
       console.log("register");
     }
-    // router.push("/");
+    router.push("/");
   } catch (e) {
+    console.log(e);
     handleError(e);
   } finally {
     isLoading.value = false;
@@ -119,7 +135,6 @@ const handleSubmit = async () => {
         </h1>
       </div>
 
-      <!-- Auth Toggle Buttons -->
       <div class="w-full mt-2 mb-4">
         <button
           @click="authAction = 'login'"
@@ -153,7 +168,6 @@ const handleSubmit = async () => {
         </button>
       </div>
 
-      <!-- Auth Form -->
       <form @submit.prevent="handleSubmit" class="flex flex-col justify-center">
         <div class="mb-2">
           <label
@@ -193,7 +207,6 @@ const handleSubmit = async () => {
           />
         </div>
 
-        <!-- Password Info Hover -->
         <PasswordDetails
           v-if="authAction === 'register'"
           :isValidPassword="isValidPassword"
@@ -203,7 +216,6 @@ const handleSubmit = async () => {
           :isSpecialCharValid="isSpecialCharValid"
         />
 
-        <!-- Repeat Password Field -->
         <div
           :class="[
             'transition-all duration-300 ease-in-out overflow-hidden',
@@ -219,6 +231,7 @@ const handleSubmit = async () => {
           <input
             id="repeatPassword"
             v-model="repeatedPassword"
+            :disabled="authAction !== 'register'"
             :class="[
               'w-full text-white rounded-md border p-1.5 outline-none bg-slate-600',
               wrongRepeatedPassword ? 'border-red-600' : 'border-transparent',
@@ -228,8 +241,7 @@ const handleSubmit = async () => {
           />
         </div>
 
-        <!-- Submit Button -->
-        <div v-if="isLoading" class="w-10 h-10 mx-auto"></div>
+        <div v-if="isLoading" class="w-10 h-10 mx-auto"><Loader /></div>
         <input
           v-else
           class="bg-zinc-950 text-white hover:text-zinc-400 hover:scale-95 duration-150 ease-in-out w-40 mx-auto cursor-pointer rounded-xl py-2"
@@ -239,7 +251,6 @@ const handleSubmit = async () => {
       </form>
     </div>
 
-    <!-- Stars Background -->
     <StarBackground />
   </div>
 </template>
