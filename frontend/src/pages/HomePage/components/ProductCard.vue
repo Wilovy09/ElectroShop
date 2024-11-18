@@ -13,7 +13,7 @@
     >
       <div class="m-2 mt-0">
         <h2 class="text-base">Titulo</h2>
-        <p class="text-sm line-clamp-5 text-left">
+        <p class="text-sm line-clamp-5 max-sm:line-clamp-3 text-left">
           <span class="block text-stone-500 text-xs">Categoria</span>Lorem ipsum
           dolor sit amet consectetur adipisicing elit. Omnis eaque esse cum
           adipisci voluptatum odio? Quidem magnam possimus unde quasi aut

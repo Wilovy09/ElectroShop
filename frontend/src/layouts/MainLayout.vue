@@ -9,10 +9,11 @@ import {
   HomeIcon,
   ListBulletIcon,
   ChevronDownIcon,
-  PlusCircleIcon,
+  PlusIcon,
 } from "@heroicons/vue/24/outline";
 import { useUserStore } from "../stores/useUserStore";
 import { useRouter } from "vue-router";
+import { MinusIcon } from "@heroicons/vue/24/solid";
 
 const router = useRouter();
 const isAdmin = useUserStore().userRole == "Administrador";
@@ -143,23 +144,37 @@ onUnmounted(() => {
               }"
             >
               <ul class="list-disc flex-col flex ml-8 mb-3.5 text-sm">
-                <button
-                  v-for="category in categories"
-                  :key="category.id"
-                  :disabled="!areCategoriesShown"
-                  class="hover:text-white pl-6 pr-2 py-1 my-0.5"
-                >
-                  <li class="text-left">{{ category.name }}</li>
-                </button>
+                <div v-for="category in categories" :key="category.id">
+                  <button
+                    @click="console.log('seleccionado')"
+                    :disabled="!areCategoriesShown"
+                    class="hover:text-white w-fit pl-6 py-1 my-0.5"
+                  >
+                    <li :class="isAdmin ? 'w-28 mr-3' : 'w-full'">
+                      <div class="flex items-center justify-between text-left">
+                        <p>{{ category.name }}</p>
+                      </div>
+                    </li></button
+                  ><button
+                    v-if="isAdmin"
+                    :disabled="!areCategoriesShown"
+                    @click="console.log('eliminado')"
+                    class="bg-white/10 mr-2 p-0.5 backdrop-blur-md rounded-full"
+                  >
+                    <MinusIcon class="size-4" />
+                  </button>
+                </div>
                 <button
                   v-if="isAdmin"
                   :disabled="!areCategoriesShown"
                   class="hover:text-white bg-slate-950 rounded-lg w-fit pl-6 pr-2 py-1 my-0.5"
                 >
                   <li>
-                    <div class="w-36 flex items-end justify-between text-left">
+                    <div
+                      class="w-36 flex items-center justify-between text-left"
+                    >
                       <p>Agregar</p>
-                      <PlusCircleIcon class="size-4 ml-1.5" />
+                      <PlusIcon class="size-5" />
                     </div>
                   </li>
                 </button>
