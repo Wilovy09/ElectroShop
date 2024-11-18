@@ -1,6 +1,6 @@
 // CREATE & DELETE
 use crate::{
-	models::category::CreateCategory,
+	models::category::{CreateCategory, Category},
 	params::category::PartialCategoryParams,
 	responses::message::Messages,
 	AppState,
@@ -20,16 +20,14 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 #[protect("Administrador")]
 async fn create(state: Data<AppState>, body: Json<CreateCategory>) -> HttpResponse {
 	let category_name = &body.name.clone();
-	match sqlx::query!(
+	match sqlx::query_as!(Category,
 		 "INSERT INTO Category (name) VALUES ($1) RETURNING id, name",
 		 category_name
 	)
 	.fetch_one(&state.db)
 	.await
 	{
-		 Ok(_) => HttpResponse::Ok().json(Messages {
-			  message: "Category created".to_string(),
-		 }),
+		 Ok(created_category) => HttpResponse::Ok().json(created_category),
 		 Err(_) => HttpResponse::Unauthorized().json(Messages {
 			  message: "Invalid role.".to_string(),
 		 }),
@@ -44,7 +42,9 @@ async fn delete(state: Data<AppState>, params: web::Path<PartialCategoryParams>)
 		 .execute(&state.db)
 		 .await
 	{
-		 Ok(_) => HttpResponse::NoContent().body(""),
+		 Ok(_) => HttpResponse::Ok().json(Messages {
+			  message: "Succesfully deleted".to_string(),
+		 }),
 		 Err(_) => HttpResponse::NotFound().json(Messages {
 			  message: "Category not found".to_string(),
 		 }),
