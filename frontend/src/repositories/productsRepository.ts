@@ -21,7 +21,6 @@ export class productsRepository {
       handleError("Ha ocurrido un error de autenticación");
       useUserStore().logout(useRouter());
     }
-    console.log(productInformation);
     return await apiRequest("/admin/product", "POST", productInformation, {
       Authorization: `Bearer ${token}`,
     });
@@ -33,7 +32,6 @@ export class productsRepository {
       handleError("Ha ocurrido un error de autenticación");
       useUserStore().logout(useRouter());
     }
-    console.log(newDetails);
     return await apiRequest(
       `/admin/products/${newDetails.id}`,
       "PUT",
@@ -44,5 +42,19 @@ export class productsRepository {
     );
   }
 
-  public static async deleteProduct() {}
+  public static async deleteProduct(productId: number) {
+    const token = useUserStore().token ?? useUserStore().getToken();
+    if (!token) {
+      handleError("Ha ocurrido un error de autenticación");
+      useUserStore().logout(useRouter());
+    }
+    return await apiRequest(
+      `/admin/products/${productId}`,
+      "DELETE",
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+  }
 }
