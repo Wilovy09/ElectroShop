@@ -32,14 +32,14 @@ function handleClear() {
           :key="item.product.id"
           class="flex items-center justify-between rounded border p-2"
         >
-          <div>
+          <div class="w-full">
             <h2 class="text-lg font-semibold text-white">
               {{ item.product.name }}
             </h2>
             <p class="text-sm text-gray-500">
               {{ item.product.description }}
             </p>
-            <div class="mt-2 flex justify-between">
+            <div class="mt-2 w-full flex justify-between">
               <div class="grid">
                 <p class="text-sm text-white">Cantidad: {{ item.quantity }}</p>
                 <p class="text-sm font-semibold text-gray-500">
