@@ -11,10 +11,7 @@ use actix_web::{
 };
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    cfg.service(get)
-        .service(get)
-        .service(find)
-        .service(find_by_category);
+    cfg.service(get).service(find).service(find_by_category);
 }
 
 #[get("/products")]
