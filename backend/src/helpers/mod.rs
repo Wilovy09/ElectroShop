@@ -1,3 +1,2 @@
 pub mod hash_passwords;
-pub mod validate_password; 
-
+pub mod validate_password;
