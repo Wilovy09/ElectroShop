@@ -27,8 +27,8 @@ async fn create(state: Data<AppState>, body: Json<CreateProduct>) -> HttpRespons
 	let deleted = &body.deleted;
 
 	match sqlx::query_as!(
-		CreateProduct,
-		"INSERT INTO Product (category_id, name, image, description, price, units, deleted) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING category_id, name, image, description, price, units, deleted",
+		Product,
+		"INSERT INTO Product (category_id, name, image, description, price, units, deleted) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, category_id, name, image, description, price, units, deleted",
 		category_id,
 		name,
 		image,
