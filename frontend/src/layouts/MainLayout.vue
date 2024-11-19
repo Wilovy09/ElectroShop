@@ -265,26 +265,17 @@ onUnmounted(() => {
         </div>
 
         <!-- Main content -->
-            <div class="flex flex-col flex-grow">
-              <!-- Navbar -->
-              <nav class="bg-slate-900 min-h-16 px-4 flex items-center justify-between">
+        <div class="flex flex-col flex-grow">
+            <!-- Navbar -->
+            <nav
+                class="bg-slate-900 min-h-16 px-4 flex items-center justify-between"
+            >
                 <button
-                  @click="toggleSidebar"
-                  class="text-zinc-400 hover:text-white lg:hidden"
+                    @click="toggleSidebar"
+                    class="text-zinc-400 hover:text-white lg:hidden"
                 >
-                  <Bars3Icon class="size-6" />
+                    <Bars3Icon class="size-6" />
                 </button>
-                <div class="flex justify-center flex-grow">
-                  <div class="relative w-3/5">
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      class="w-full px-4 py-2 pr-10 rounded-md bg-slate-600 text-white placeholder-zinc-400 focus:outline-none ring-slate-600 ring-1 focus:ring-zinc-400"
-                    />
-                    <button
-                      class="absolute right-2 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-white"
-                    ></button>
-                    </div>
                 <div class="flex justify-center flex-grow">
                     <div class="relative w-3/5">
                         <input
