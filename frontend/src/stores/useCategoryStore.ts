@@ -13,5 +13,23 @@ export const useCategoryStore = defineStore("category", () => {
       return categories.value;
     }
   }
-  return { categories, getCategories };
+
+  async function deleteCategory(categoryId: number) {
+    try {
+      await categoriesRepository.deleteCategory(categoryId);
+      categories.value?.forEach((category, index) => {
+        if (category.id === categoryId) categories.value?.splice(index, 1);
+      });
+    } catch (e) {}
+  }
+
+  async function addCategory(
+    categoryName: string
+  ): Promise<{ id: number; name: string }> {
+    const newCategory = await categoriesRepository.addCategories(categoryName);
+    categories.value?.push(newCategory);
+    return newCategory;
+  }
+
+  return { categories, getCategories, deleteCategory, addCategory };
 });
