@@ -325,6 +325,134 @@ Obtiene todos los productos de una categoría específica.
 }
 ```
 
+## Historial de ventas
+
+### POST /sell
+
+Crea una nueva venta con sus transacciones asociadas.
+
+**Request Body:**
+```json
+{
+    "user_id": 1,
+    "total_amount": 299.99,
+    "transactions": [
+        {
+            "product_name": "Smartphone XYZ",
+            "id_product": 1,
+            "quantity": 2
+        },
+        {
+            "product_name": "Auriculares ABC",
+            "id_product": 3,
+            "quantity": 1
+        }
+    ]
+}
+```
+
+**Respuesta Exitosa (204):**
+*No content*
+
+**Posibles Errores:**
+
+- 500 Internal Server Error:
+```json
+{
+    "message": "Failed to create sell"
+}
+```
+```json
+{
+    "message": "Failed to create transaction"
+}
+```
+
+### GET /sell/{user_id}
+
+Obtiene todas las transacciones de venta de un usuario específico.
+
+**Parámetros URL:**
+- `user_id`: ID del usuario (i64)
+
+**Respuesta Exitosa (200):**
+```json
+[
+    {
+        "total_amount": 299.99,
+        "sell_date": "2024-01-01T12:00:00",
+        "product_name": "Smartphone XYZ",
+        "id_sell": 1,
+        "id_product": 1,
+        "quantity": 2
+    },
+    {
+        "total_amount": 299.99,
+        "sell_date": "2024-01-01T12:00:00",
+        "product_name": "Auriculares ABC",
+        "id_sell": 1,
+        "id_product": 3,
+        "quantity": 1
+    }
+]
+```
+
+**Posibles Errores:**
+
+- 500 Internal Server Error:
+```json
+{
+    "message": "Failed to fetch sell transactions"
+}
+```
+
+### GET /sell
+
+Obtiene todas las transacciones de venta del sistema. Requiere rol de Administrador.
+
+**Request Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Respuesta Exitosa (200):**
+```json
+[
+    {
+        "total_amount": 299.99,
+        "sell_date": "2024-01-01T12:00:00",
+        "product_name": "Smartphone XYZ",
+        "id_sell": 1,
+        "id_product": 1,
+        "quantity": 2
+    },
+    {
+        "total_amount": 149.99,
+        "sell_date": "2024-01-02T15:30:00",
+        "product_name": "Tablet ABC",
+        "id_sell": 2,
+        "id_product": 4,
+        "quantity": 1
+    }
+]
+```
+
+**Posibles Errores:**
+
+- 401 Unauthorized:
+```json
+{
+    "message": "Invalid role"
+}
+```
+
+- 500 Internal Server Error:
+```json
+{
+    "message": "Failed to fetch sell transactions"
+}
+```
+
 ## Notas Importantes
 
 1. La autenticación utiliza tokens JWT que deben incluirse en el header `Authorization` con el formato `Bearer <token>`.
