@@ -46,6 +46,7 @@ async fn main() -> std::io::Result<()> {
             .configure(routes::client::auth::config)
             .configure(routes::client::categories::config)
             .configure(routes::client::products::config)
+            .configure(routes::client::sell::config)
             //Rutas Admin
             .service(
                 web::scope("/admin")
