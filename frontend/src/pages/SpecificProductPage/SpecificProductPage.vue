@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { apiRequest } from '../../services/api'
-import { type Product, fakesProducts as productFallback } from '../../entities/Product'
+import { type Product  } from '../../entities/Product'
 import { useCartStore } from '../../stores/useCartStore'
 
 const cartStore = useCartStore()
@@ -19,7 +19,7 @@ async function getProduct() {
     if (response) {
       product.value = response
     } else {
-      product.value = productFallback.find((p) => p.id === productId.value) ?? null
+      product.value = null
     }
 
     if (!product.value) {
@@ -27,7 +27,7 @@ async function getProduct() {
     }
   } catch (error) {
     console.error('Error fetching product:', error)
-    product.value = productFallback.find((p) => p.id === productId.value) ?? null
+    product.value =  null
   }
 }
 
