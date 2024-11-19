@@ -19,6 +19,7 @@ import handleError from "../helpers/handleError";
 import { showInputSwal } from "../helpers/inputSwal";
 import showSuccedSwal from "../helpers/succedSwal";
 import showConfirmationSwal from "../helpers/confirmationSwal";
+import { useCategoryStore } from "../stores/useCategoryStore";
 
 const router = useRouter();
 const isAdmin = useUserStore().userRole === "Administrador";
@@ -32,11 +33,8 @@ const areCategoriesShown = ref(false);
 const categories = ref<{ id: number; name: string }[] | null>(null);
 
 async function getAllCategories() {
-  try {
-    categories.value = await categoriesRepository.getCategories();
-  } catch (e) {
-    categories.value = null;
-  }
+  categories.value =
+    useCategoryStore().categories ?? (await useCategoryStore().getCategories());
 }
 
 //agregar esto a la función donde se obtienen las categorias
