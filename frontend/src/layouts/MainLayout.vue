@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, toRaw } from "vue";
 import {
   XMarkIcon,
   Bars3Icon,
@@ -32,8 +32,11 @@ const areCategoriesShown = ref(false);
 const categories = ref<{ id: number; name: string }[] | null>(null);
 
 async function getAllCategories() {
-  categories.value =
+  const storeCategories =
     useCategoryStore().categories ?? (await useCategoryStore().getCategories());
+  categories.value = storeCategories
+    ? JSON.parse(JSON.stringify(toRaw(storeCategories)))
+    : null;
 }
 
 //agregar esto a la función donde se obtienen las categorias
