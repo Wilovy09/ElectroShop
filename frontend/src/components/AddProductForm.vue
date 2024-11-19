@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import handleError from '../helpers/handleError'
-import { PhotoIcon } from '@heroicons/vue/24/solid'
 import { useCategoryStore } from '../stores/useCategoryStore'
 import { fileToBase64 } from '../helpers/convertToBase64'
 import { productsRepository } from '../repositories/productsRepository'
@@ -127,7 +126,10 @@ const isProductChanged = computed(() => {
   return JSON.stringify(originalProduct) !== JSON.stringify(formData.value)
 })
 
+const isLoading = ref(false)
+
 async function handleSubmit() {
+  isLoading.value = true
   if (!validateForm() || !isProductChanged) {
     return
   }
@@ -173,6 +175,8 @@ async function handleSubmit() {
     }
   } catch (e) {
     handleError(e)
+  }finally{
+    isLoading.value = false
   }
 }
 </script>
@@ -322,10 +326,10 @@ async function handleSubmit() {
           </button>
           <button
             @click="handleSubmit"
-            :disabled="!isFormValid || !isProductChanged"
+            :disabled="!isFormValid || !isProductChanged || isLoading"
             class="rounded-lg bg-zinc-950 px-4 py-2 text-white transition-all duration-300 hover:scale-95"
             :class="{
-              'cursor-not-allowed opacity-50': !isFormValid || !isProductChanged
+              'cursor-not-allowed opacity-50': !isFormValid || !isProductChanged || isLoading
             }"
           >
             Guardar
