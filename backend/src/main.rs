@@ -1,9 +1,9 @@
+use actix_cors::Cors;
 use actix_web::{
     get,
     web::{self, Data},
     App, HttpResponse, HttpServer,
 };
-use actix_cors::Cors;
 use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
 use middlewares::jwt::validator;
@@ -38,6 +38,12 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Error al crear la conexión a la base de datos");
 
+    // Habilitar las restricciones de claves foráneas
+    sqlx::query("PRAGMA foreign_keys = ON;")
+        .execute(&pool)
+        .await
+        .expect("Error al habilitar las restricciones de claves foráneas");
+
     HttpServer::new(move || {
         let auth = HttpAuthentication::with_fn(validator);
         App::new()
@@ -46,12 +52,14 @@ async fn main() -> std::io::Result<()> {
             .configure(routes::client::auth::config)
             .configure(routes::client::categories::config)
             .configure(routes::client::products::config)
+            .configure(routes::client::sell::config)
             //Rutas Admin
             .service(
                 web::scope("/admin")
                     .wrap(auth)
                     .configure(routes::admin::categories::config)
                     .configure(routes::admin::products::config)
+                    .configure(routes::admin::sell::config),
             )
             .wrap(
                 Cors::default()
@@ -64,3 +72,4 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+
