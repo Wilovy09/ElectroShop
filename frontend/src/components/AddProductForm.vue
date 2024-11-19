@@ -56,7 +56,8 @@ const isFormValid = computed(() => {
     Number.isInteger(formData.value.price) &&
     formData.value.price > 0 &&
     Number.isInteger(formData.value.units) &&
-    formData.value.units >= 0
+    formData.value.units >= 0 &&
+    formData.value.image
   );
 });
 
