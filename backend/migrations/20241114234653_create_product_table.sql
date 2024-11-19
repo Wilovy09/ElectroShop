@@ -7,5 +7,5 @@ CREATE TABLE Product (
     price REAL NOT NULL,
     units INTEGER NOT NULL,
     deleted TEXT DEFAULT 'false' CHECK(deleted IN ('false', 'true')),
-    FOREIGN KEY (category_id) REFERENCES Category(id)
+    FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE CASCADE
 );

@@ -38,6 +38,12 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Error al crear la conexión a la base de datos");
 
+    // Habilitar las restricciones de claves foráneas
+    sqlx::query("PRAGMA foreign_keys = ON;")
+        .execute(&pool)
+        .await
+        .expect("Error al habilitar las restricciones de claves foráneas");
+
     HttpServer::new(move || {
         let auth = HttpAuthentication::with_fn(validator);
         App::new()
@@ -52,7 +58,8 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/admin")
                     .wrap(auth)
                     .configure(routes::admin::categories::config)
-                    .configure(routes::admin::products::config),
+                    .configure(routes::admin::products::config)
+                    .configure(routes::admin::sell::config),
             )
             .wrap(
                 Cors::default()
@@ -65,3 +72,4 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+
