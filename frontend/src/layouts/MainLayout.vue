@@ -14,7 +14,6 @@ import {
 import { useUserStore } from "../stores/useUserStore";
 import { useRouter } from "vue-router";
 import { MinusIcon } from "@heroicons/vue/24/solid";
-import { categoriesRepository } from "../repositories/categoriesRepository";
 import handleError from "../helpers/handleError";
 import { showInputSwal } from "../helpers/inputSwal";
 import showSuccedSwal from "../helpers/succedSwal";
@@ -50,7 +49,7 @@ async function showSwal() {
     categories.value?.map((value) => {
       if (value.name === input) throw new Error("Ya existe esta categoría");
     });
-    const response = await categoriesRepository.addCategories(input);
+    const response = await useCategoryStore().addCategory(input);
     categories.value?.push(response);
     showSuccedSwal("Categoría creada con exito");
   } catch (e) {
@@ -65,8 +64,7 @@ async function showWarningSwal(categoryId: number) {
       "Todos los productos de esta categoría serán eliminados"
     );
     if (response !== true) return;
-    await categoriesRepository.deleteCategory(categoryId);
-
+    await useCategoryStore().deleteCategory(categoryId);
     if (categories.value)
       categories.value = categories.value.filter((value) => {
         if (value.id !== categoryId) return value;
@@ -156,7 +154,7 @@ onUnmounted(() => {
             <p>Compras</p>
           </RouterLink>
           <div
-            v-if="categories || isAdmin"
+            v-if="categories?.length || isAdmin"
             class="w-full border-y border-slate-600 hover:border-white transition-all duration-300 ease-in-out"
           >
             <button
@@ -187,16 +185,24 @@ onUnmounted(() => {
             >
               <ul class="list-disc flex-col flex ml-8 mb-3.5 text-sm">
                 <div v-for="category in categories" :key="category.id">
-                  <button
-                    @click="console.log('seleccionado')"
-                    :disabled="!areCategoriesShown"
-                    class="hover:text-white w-fit pl-6 py-1 my-0.5"
+                  <RouterLink
+                    :to="{
+                      name: 'CategoryProducts',
+                      params: { categoryName: category.name.replace(' ', '-') },
+                    }"
                   >
-                    <li :class="isAdmin ? 'w-28 mr-3' : 'w-full'">
-                      <div class="flex items-center justify-between text-left">
-                        <p>{{ category.name }}</p>
-                      </div>
-                    </li></button
+                    <button
+                      :disabled="!areCategoriesShown"
+                      class="hover:text-white w-fit pl-6 py-1 my-0.5"
+                    >
+                      <li :class="isAdmin ? 'w-28 mr-3' : 'w-full'">
+                        <div
+                          class="flex items-center justify-between text-left"
+                        >
+                          <p>{{ category.name }}</p>
+                        </div>
+                      </li>
+                    </button></RouterLink
                   ><button
                     v-if="isAdmin"
                     :disabled="!areCategoriesShown"
@@ -251,7 +257,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Main content -->
-    <div class="flex flex-col flex-grow">
+    <div class="flex flex-col flex-grow min-w-[208px]">
       <!-- Navbar -->
       <nav class="bg-slate-900 min-h-16 px-4 flex items-center justify-between">
         <button
