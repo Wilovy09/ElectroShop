@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import ProductCard from './components/ProductCard.vue'
 import { Product } from '../../entities/Product'
-import { onMounted, ref, watch } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { productsRepository } from '../../repositories/productsRepository'
 import { useCategoryStore } from '../../stores/useCategoryStore'
 import handleError from '../../helpers/handleError'
@@ -12,10 +12,12 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid'
 import { useUserStore } from '../../stores/useUserStore'
 import showConfirmationSwal from '../../helpers/confirmationSwal'
 import showSuccedSwal from '../../helpers/succedSwal'
+import VLoader from '../../components/VLoader.vue'
 
 type RouteParams = {
   categoryName: string
 }
+const isLoading = ref(true)
 
 const isAdmin = useUserStore().userRole === 'Administrador'
 const route = useRoute()
@@ -46,6 +48,7 @@ const selectedProduct = ref<{
 })
 
 async function getProducts() {
+  isLoading.value =true
   try {
     if (routeName == 'Home') {
       products.value = await productsRepository.getAllProducts()
@@ -66,7 +69,7 @@ async function getProducts() {
     }
   } catch (e) {
     handleError(e)
-  }
+  }finally{isLoading.value = false}
 }
 
 function showFormModal(chosenProduct?: Product) {
@@ -91,6 +94,7 @@ async function deleteProduct(productId: number) {
       '¿Estás seguro que quieres eliminar este producto?'
     )
     if (confirm !== true) return
+    isLoading.value = true
     const response = await productsRepository.deleteProduct(productId)
     products.value?.forEach((product, index) => {
       if (product.id === response.id) products.value?.splice(index, 1)
@@ -98,7 +102,7 @@ async function deleteProduct(productId: number) {
     showSuccedSwal('Producto eliminado')
   } catch (e) {
     handleError(e)
-  }
+  }finally{isLoading.value = false}
 }
 
 function handleAction(response: Product) {
@@ -116,11 +120,11 @@ onMounted(getProducts)
 </script>
 
 <template>
-  <div class="flex w-full justify-center">
+  <VLoader v-if="isLoading"/>
+  <div v-else class="flex w-full justify-center">
     <div
       :class="[
-        'grid w-full grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3',
-        products?.length ? 'max-w-max' : ''
+        'grid w-full grid-cols-1 max-w-max gap-8 sm:grid-cols-2 xl:grid-cols-3',
       ]"
     >
       <div v-for="product in products" :key="product.id" class="relative">
@@ -134,7 +138,7 @@ onMounted(getProducts)
           </button>
         </div>
       </div>
-      <AddProductCard v-if="isAdmin" @click="showFormModal()" />
+      <AddProductCard v-if="isAdmin" :class="products?.length ? '': ' min-w-80 min-[400px]:min-w-96'" @click="showFormModal()" />
       <AddProductForm
         v-if="showForm"
         @save="(value) => handleAction(value)"
