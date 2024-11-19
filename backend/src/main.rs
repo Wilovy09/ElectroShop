@@ -1,9 +1,9 @@
+use actix_cors::Cors;
 use actix_web::{
     get,
     web::{self, Data},
     App, HttpResponse, HttpServer,
 };
-use actix_cors::Cors;
 use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
 use middlewares::jwt::validator;
@@ -46,12 +46,13 @@ async fn main() -> std::io::Result<()> {
             .configure(routes::client::auth::config)
             .configure(routes::client::categories::config)
             .configure(routes::client::products::config)
+            .configure(routes::client::sell::config)
             //Rutas Admin
             .service(
                 web::scope("/admin")
                     .wrap(auth)
                     .configure(routes::admin::categories::config)
-                    .configure(routes::admin::products::config)
+                    .configure(routes::admin::products::config),
             )
             .wrap(
                 Cors::default()
