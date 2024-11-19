@@ -30,16 +30,18 @@ defineProps<{ product: Product }>();
     </div>
 
     <!-- Acciones -->
-    <div class="flex justify-between items-center p-4 border-t border-gray-700">
+    <div
+      class="flex max-[320px]:flex-col gap-x-2 justify-between items-center p-4 border-t border-gray-700"
+    >
       <button
-        class="px-4 py-2 bg-green-600 text-sm font-semibold rounded hover:bg-green-700 transition"
+        class="px-4 py-2 max-[320px]:w-full bg-green-600 text-sm font-semibold rounded hover:bg-green-700 transition"
         @click="console.log('añadido al carrito')"
       >
         Agregar al carrito
       </button>
       <a
         :href="`/product/${product.id}`"
-        class="px-4 py-2 bg-blue-600 text-sm font-semibold rounded hover:bg-blue-700 transition"
+        class="px-4 py-2 max-[320px]:w-full text-center bg-blue-600 text-sm font-semibold rounded hover:bg-blue-700 transition"
       >
         Ver detalles
       </a>
