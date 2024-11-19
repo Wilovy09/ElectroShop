@@ -140,7 +140,7 @@ onUnmounted(() => {
             <p>Inicio</p>
           </RouterLink>
           <RouterLink
-            :to="{ name: '' }"
+            :to="{ name: 'cart' }"
             class="w-full flex items-center border-y border-slate-600 p-4 text-left hover:text-white hover:border-white transition-all duration-300"
           >
             <ShoppingCartIcon class="size-6 mr-2" />
@@ -257,7 +257,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Main content -->
-    <div class="flex flex-col flex-grow min-w-[208px]">
+    <div class="flex flex-col flex-grow">
       <!-- Navbar -->
       <nav class="bg-slate-900 min-h-16 px-4 flex items-center justify-between">
         <button

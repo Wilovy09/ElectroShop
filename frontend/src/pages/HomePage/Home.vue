@@ -153,5 +153,4 @@ onMounted(getProducts);
         :product="selectedProduct"
       />
     </div>
-  </div>
 </template>

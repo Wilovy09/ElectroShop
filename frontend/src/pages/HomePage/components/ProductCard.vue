@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import { useCartStore } from "../../../stores/useCartStore";
 import type { Product } from "../../../entities/Product";
 
 // Recibe la prop del producto
 defineProps<{ product: Product }>();
+
+const cartStore = useCartStore();
+
+function addToCart(product: Product) {
+  cartStore.addToCart(product, 1); // Aquí 'product' es la prop recibida
+}
 </script>
+
 <template>
   <div class="max-w-sm w-full rounded-xl shadow-lg bg-gray-800 text-white">
     <!-- Enlace al producto -->
@@ -35,7 +43,7 @@ defineProps<{ product: Product }>();
     >
       <button
         class="px-4 py-2 max-[320px]:w-full bg-green-600 text-sm font-semibold rounded hover:bg-green-700 transition"
-        @click="console.log('añadido al carrito')"
+        @click="addToCart(product)"
       >
         Agregar al carrito
       </button>
