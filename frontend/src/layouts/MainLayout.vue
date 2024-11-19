@@ -143,7 +143,7 @@ onUnmounted(() => {
             <p>Carrito</p>
           </RouterLink>
           <RouterLink
-            :to="{ name: '' }"
+            :to="{ name: 'SellHistory' }"
             class="flex w-full items-center border-y border-slate-600 p-4 text-left transition-all duration-300 hover:border-white hover:text-white"
           >
             <ShoppingBagIcon class="mr-2 size-6" />
@@ -187,7 +187,7 @@ onUnmounted(() => {
                   >
                     <button
                       :disabled="!areCategoriesShown"
-                      class="my-0.5 w-fit py-1 pl-6 hover:text-white"
+                      :class="['my-0.5 py-1 pl-6 hover:text-white', isAdmin ? 'w-fit' : 'w-full']"
                     >
                       <li :class="isAdmin ? 'mr-3 w-28' : 'w-full'">
                         <div class="flex items-center justify-between text-left">
@@ -199,7 +199,7 @@ onUnmounted(() => {
                     v-if="isAdmin"
                     :disabled="!areCategoriesShown"
                     @click="showWarningSwal(category.id)"
-                    class="mr-2 rounded-full bg-white/10 p-0.5 backdrop-blur-md"
+                    class=" rounded-full bg-white/10 p-0.5 backdrop-blur-md"
                   >
                     <MinusIcon class="size-4" />
                   </button>

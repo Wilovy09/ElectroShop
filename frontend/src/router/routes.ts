@@ -32,6 +32,11 @@ const routes = [
         component: () => import('../pages/HomePage/Home.vue'),
         meta: { key: 'category-products' },
       },
+      {
+        path: "/historial-de-compras",
+        name: 'SellHistory',
+        component: () => import('../pages/SellHistoryPage/SellHistoryPage.vue'),
+      }
     ],
   },
 ];
