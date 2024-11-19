@@ -6,7 +6,7 @@ export type Product = {
   description: string;
   price: number;
   units: number;
-  deleted: "true" | "false";
+  deleted: "true" | "false" | null;
 };
 
 export const fakesProducts: Product[] = [
