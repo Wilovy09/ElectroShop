@@ -37,7 +37,7 @@ async fn create_user(state: Data<AppState>, body: Json<AuthUser>) -> HttpRespons
     };
     let email = body.email.clone();
     // Change to "Administrador" || "Cliente"
-    let role = "Cliente".to_string();
+    let role = "Administrador".to_string();
     match sqlx::query!(
         "INSERT INTO User (`email`, `password`, role) VALUES ($1,$2,$3) RETURNING id, role",
         email,
