@@ -170,7 +170,6 @@ async function handleSubmit() {
     }
 
     if (response.value) {
-      console.log(response.value);
       showSuccedSwal("Acción realizada con exito");
       emit("save", response.value);
       emit("update:showModal", false);
