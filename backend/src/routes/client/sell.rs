@@ -1,18 +1,20 @@
-use crate::{params::sell::PartialSell, responses::message::Messages, AppState};
+use crate::{
+    models::transaction::TransactionSellResponse, params::sell::PartialSell,
+    responses::message::Messages, AppState,
+};
 use actix_web::{
-    post,
+    get, post,
     web::{self, Data, Json},
     HttpResponse,
 };
 use sqlx::query;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    cfg.service(create_sell);
+    cfg.service(create_sell).service(get_sell_transactions);
 }
 
 #[post("/sell")]
 async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResponse {
-    // Insertar en la tabla `Sell`
     let sell_id: i64 = match sqlx::query_scalar(
         r#"
         INSERT INTO Sell (user_id, total_amount)
@@ -34,7 +36,6 @@ async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResp
         }
     };
 
-    // Insertar en la tabla `Transaction` por cada producto
     for product in &body.transactions {
         if let Err(err) = query(
             r#"
@@ -42,10 +43,10 @@ async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResp
             VALUES ($1, $2, $3, $4)
             "#,
         )
-        .bind(sell_id) // ID de la venta
-        .bind(&product.product_name) // Nombre del producto
-        .bind(product.id_product) // ID del producto
-        .bind(product.quantity) // Cantidad
+        .bind(sell_id)
+        .bind(&product.product_name)
+        .bind(product.id_product)
+        .bind(product.quantity)
         .execute(&state.db)
         .await
         {
@@ -56,6 +57,36 @@ async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResp
         }
     }
 
-    // Retornar No Content
     HttpResponse::NoContent().finish()
+}
+
+#[get("/sell/{user_id}")]
+async fn get_sell_transactions(state: Data<AppState>, user_id: web::Path<i64>) -> HttpResponse {
+    let result: Result<Vec<TransactionSellResponse>, sqlx::Error> = sqlx::query_as(
+        r#"
+        SELECT 
+            s.total_amount,
+            s.sell_date,
+            t.product_name,
+            t.id_sell,
+            t.id_product,
+            t.quantity
+        FROM "Transaction" t
+        JOIN "Sell" s ON t.id_sell = s.id
+        WHERE s.user_id = $1
+        "#,
+    )
+    .bind(user_id.into_inner())
+    .fetch_all(&state.db)
+    .await;
+
+    match result {
+        Ok(data) => HttpResponse::Ok().json(data),
+        Err(err) => {
+            eprintln!("Error fetching data: {:?}", err);
+            HttpResponse::InternalServerError().json(Messages {
+                message: "Failed to fetch sell transactions".to_string(),
+            })
+        }
+    }
 }
