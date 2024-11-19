@@ -94,7 +94,6 @@ const handleSubmit = async () => {
     wrongRepeatedPassword.value = Boolean(errors.value.repeatedPassword);
 
     Object.values(errors.value).forEach(function (message) {
-      console.log(message);
       handleError(message);
     });
     return;
@@ -109,7 +108,6 @@ const handleSubmit = async () => {
     }
     router.push("/");
   } catch (e) {
-    console.log(e);
     handleError(e);
   } finally {
     isLoading.value = false;

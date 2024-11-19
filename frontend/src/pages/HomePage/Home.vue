@@ -48,9 +48,7 @@ const selectedProduct = ref<{
 async function getProducts() {
   try {
     if (routeName == "Home") {
-      console.log("todos");
       products.value = await productsRepository.getAllProducts();
-      console.log(products.value);
     } else {
       const categories =
         useCategoryStore().categories ??
@@ -153,4 +151,5 @@ onMounted(getProducts);
         :product="selectedProduct"
       />
     </div>
+  </div>
 </template>
