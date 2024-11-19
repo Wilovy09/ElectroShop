@@ -7,11 +7,10 @@ export const useCategoryStore = defineStore("category", () => {
   async function getCategories() {
     try {
       categories.value = await categoriesRepository.getCategories();
-      return categories.value;
     } catch (e) {
       categories.value = null;
-      return categories.value;
     }
+    return categories.value;
   }
 
   async function deleteCategory(categoryId: number) {
