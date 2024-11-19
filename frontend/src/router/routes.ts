@@ -1,38 +1,37 @@
 const routes = [
   {
-    path: "/auth",
-    name: "Authentication",
-    component: () => import("../pages/AuthenticationPage/AuthPage.vue"),
+    path: '/auth',
+    name: 'Authentication',
+    component: () => import('../pages/AuthenticationPage/AuthPage.vue')
   },
   {
-    path: "/",
-    name: "Layout",
+    path: '/',
+    name: 'Layout',
     meta: { requiresAuth: true },
-    component: () => import("../layouts/MainLayout.vue"),
+    component: () => import('../layouts/MainLayout.vue'),
     children: [
       {
-        path: "",
-        name: "Home",
-        component: () => import("../pages/HomePage/Home.vue"),
+        path: '',
+        name: 'Home',
+        component: () => import('../pages/HomePage/Home.vue')
       },
       {
-        path: "/product/:id",
-        name: "product",
-        component: () =>
-          import("../pages/SpecificProductPage/SpecificProductPage.vue"),
+        path: '/product/:id',
+        name: 'product',
+        component: () => import('../pages/SpecificProductPage/SpecificProductPage.vue')
       },
       {
-        path: "/cart",
-        name: "cart",
-        component: () => import("../pages/CartPage/CartPage.vue"),
+        path: '/cart',
+        name: 'cart',
+        component: () => import('../pages/CartPage/CartPage.vue')
       },
       {
-        path: "/:categoryName/products",
-        name: "CategoryProducts",
-        component: () => import("../pages/HomePage/Home.vue"),
-      },
-    ],
-  },
-];
+        path: '/:categoryName/products',
+        name: 'CategoryProducts',
+        component: () => import('../pages/HomePage/Home.vue')
+      }
+    ]
+  }
+]
 
-export { routes };
+export { routes }

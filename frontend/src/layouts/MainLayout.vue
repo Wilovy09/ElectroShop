@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, toRaw } from "vue";
+import { ref, onMounted, onUnmounted, toRaw } from 'vue'
 import {
   XMarkIcon,
   Bars3Icon,
@@ -9,104 +9,102 @@ import {
   HomeIcon,
   ListBulletIcon,
   ChevronDownIcon,
-  PlusIcon,
-} from "@heroicons/vue/24/outline";
-import { useUserStore } from "../stores/useUserStore";
-import { useRouter } from "vue-router";
-import { MinusIcon } from "@heroicons/vue/24/solid";
-import handleError from "../helpers/handleError";
-import { showInputSwal } from "../helpers/inputSwal";
-import showSuccedSwal from "../helpers/succedSwal";
-import showConfirmationSwal from "../helpers/confirmationSwal";
-import { useCategoryStore } from "../stores/useCategoryStore";
+  PlusIcon
+} from '@heroicons/vue/24/outline'
+import { useUserStore } from '../stores/useUserStore'
+import { useRouter } from 'vue-router'
+import { MinusIcon } from '@heroicons/vue/24/solid'
+import handleError from '../helpers/handleError'
+import { showInputSwal } from '../helpers/inputSwal'
+import showSuccedSwal from '../helpers/succedSwal'
+import showConfirmationSwal from '../helpers/confirmationSwal'
+import { useCategoryStore } from '../stores/useCategoryStore'
 
-const router = useRouter();
-const isAdmin = useUserStore().userRole === "Administrador";
+const router = useRouter()
+const isAdmin = useUserStore().userRole === 'Administrador'
 
-const shouldShowLogoutButton = ref(false);
+const shouldShowLogoutButton = ref(false)
 
-const isSidebarOpen = ref(false);
-const sidebarRef = ref<HTMLElement | null>(null);
-const areCategoriesShown = ref(false);
+const isSidebarOpen = ref(false)
+const sidebarRef = ref<HTMLElement | null>(null)
+const areCategoriesShown = ref(false)
 
-const categories = ref<{ id: number; name: string }[] | null>(null);
+const categories = ref<{ id: number; name: string }[] | null>(null)
 
 async function getAllCategories() {
   const storeCategories =
-    useCategoryStore().categories ?? (await useCategoryStore().getCategories());
-  categories.value = storeCategories
-    ? JSON.parse(JSON.stringify(toRaw(storeCategories)))
-    : null;
+    useCategoryStore().categories ?? (await useCategoryStore().getCategories())
+  categories.value = storeCategories ? JSON.parse(JSON.stringify(toRaw(storeCategories))) : null
 }
 
 //agregar esto a la función donde se obtienen las categorias
 function getCategoriesSectionHeight() {
-  if (!categories.value) return 0;
-  return categories.value.length * 8 + 3.5 + (isAdmin ? 8 : 0);
+  if (!categories.value) return 0
+  return categories.value.length * 8 + 3.5 + (isAdmin ? 8 : 0)
 }
 
 async function showSwal() {
   try {
-    const input = await showInputSwal("Nombre de la categoría");
-    if (!input) return;
+    const input = await showInputSwal('Nombre de la categoría')
+    if (!input) return
     categories.value?.map((value) => {
-      if (value.name === input) throw new Error("Ya existe esta categoría");
-    });
-    const response = await useCategoryStore().addCategory(input);
-    categories.value?.push(response);
-    showSuccedSwal("Categoría creada con exito");
+      if (value.name === input) throw new Error('Ya existe esta categoría')
+    })
+    const response = await useCategoryStore().addCategory(input)
+    categories.value?.push(response)
+    showSuccedSwal('Categoría creada con exito')
   } catch (e) {
-    handleError(e);
+    handleError(e)
   }
 }
 
 async function showWarningSwal(categoryId: number) {
   try {
     const response = await showConfirmationSwal(
-      "Eliminar categoría",
-      "Todos los productos de esta categoría serán eliminados"
-    );
-    if (response !== true) return;
-    await useCategoryStore().deleteCategory(categoryId);
+      'Eliminar categoría',
+      'Todos los productos de esta categoría serán eliminados'
+    )
+    if (response !== true) return
+    await useCategoryStore().deleteCategory(categoryId)
     if (categories.value)
       categories.value = categories.value.filter((value) => {
-        if (value.id !== categoryId) return value;
-      });
-    showSuccedSwal("Categoría eliminada con exito");
+        if (value.id !== categoryId) return value
+      })
+    showSuccedSwal('Categoría eliminada con exito')
   } catch (e) {
-    handleError(e);
+    handleError(e)
   }
 }
 
 function toggleCategories() {
-  areCategoriesShown.value = !areCategoriesShown.value;
+  areCategoriesShown.value = !areCategoriesShown.value
 }
 
 function toggleSidebar() {
-  isSidebarOpen.value = !isSidebarOpen.value;
+  isSidebarOpen.value = !isSidebarOpen.value
 }
 
 const handleClickOutside = (event: MouseEvent) => {
   if (sidebarRef.value && !sidebarRef.value.contains(event.target as Node)) {
-    isSidebarOpen.value = false;
+    isSidebarOpen.value = false
   }
-};
+}
 
 onMounted(async () => {
-  await getAllCategories();
-  document.addEventListener("mousedown", handleClickOutside);
-});
+  await getAllCategories()
+  document.addEventListener('mousedown', handleClickOutside)
+})
 
 onUnmounted(() => {
-  document.removeEventListener("mousedown", handleClickOutside);
-});
+  document.removeEventListener('mousedown', handleClickOutside)
+})
 </script>
 <template>
-  <div class="flex flex-grow-0 w-screen h-screen">
+  <div class="flex h-screen w-screen flex-grow-0">
     <!-- Overlay for lgall screens -->
     <div
       v-if="isSidebarOpen"
-      class="fixed inset-0 backdrop-blur-lg z-20 lg:hidden duration-300 transition-all"
+      class="fixed inset-0 z-20 backdrop-blur-lg transition-all duration-300 lg:hidden"
       @click="isSidebarOpen = false"
     ></div>
 
@@ -114,20 +112,15 @@ onUnmounted(() => {
     <div
       ref="sidebarRef"
       :class="[
-        'fixed inset-y-0 left-0 z-30 min-w-64 overflow-hidden bg-slate-800 transform transition-transform duration-300 ease-in-out shadow-xl shadow-zinc-950/50',
+        'fixed inset-y-0 left-0 z-30 min-w-64 transform overflow-hidden bg-slate-800 shadow-xl shadow-zinc-950/50 transition-transform duration-300 ease-in-out',
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'lg:relative lg:translate-x-0',
+        'lg:relative lg:translate-x-0'
       ]"
     >
       <!-- Franja simulando la continuación de la navbar -->
-      <div
-        class="h-16 bg-slate-900 absol flex items-center justify-between px-4"
-      >
+      <div class="absol flex h-16 items-center justify-between bg-slate-900 px-4">
         <h2 class="text-xl font-semibold text-white">ElectroShop</h2>
-        <button
-          @click="toggleSidebar"
-          class="lg:hidden text-zinc-400 hover:text-white"
-        >
+        <button @click="toggleSidebar" class="text-zinc-400 hover:text-white lg:hidden">
           <XMarkIcon class="size-6" />
         </button>
       </div>
@@ -137,71 +130,67 @@ onUnmounted(() => {
         <div class="flex flex-col">
           <RouterLink
             :to="{ name: 'Home' }"
-            class="w-full flex items-center border-y border-slate-600 p-4 text-left hover:text-white hover:border-white transition-all duration-300"
+            class="flex w-full items-center border-y border-slate-600 p-4 text-left transition-all duration-300 hover:border-white hover:text-white"
           >
-            <HomeIcon class="size-6 mr-2" />
+            <HomeIcon class="mr-2 size-6" />
             <p>Inicio</p>
           </RouterLink>
           <RouterLink
             :to="{ name: 'cart' }"
-            class="w-full flex items-center border-y border-slate-600 p-4 text-left hover:text-white hover:border-white transition-all duration-300"
+            class="flex w-full items-center border-y border-slate-600 p-4 text-left transition-all duration-300 hover:border-white hover:text-white"
           >
-            <ShoppingCartIcon class="size-6 mr-2" />
+            <ShoppingCartIcon class="mr-2 size-6" />
             <p>Carrito</p>
           </RouterLink>
           <RouterLink
             :to="{ name: '' }"
-            class="w-full flex items-center border-y border-slate-600 p-4 text-left hover:text-white hover:border-white transition-all duration-300"
+            class="flex w-full items-center border-y border-slate-600 p-4 text-left transition-all duration-300 hover:border-white hover:text-white"
           >
-            <ShoppingBagIcon class="size-6 mr-2" />
+            <ShoppingBagIcon class="mr-2 size-6" />
             <p>Compras</p>
           </RouterLink>
           <div
             v-if="categories?.length || isAdmin"
-            class="w-full border-y border-slate-600 hover:border-white transition-all duration-300 ease-in-out"
+            class="w-full border-y border-slate-600 transition-all duration-300 ease-in-out hover:border-white"
           >
             <button
               @click="toggleCategories()"
-              class="w-full flex justify-between items-center p-4 text-left hover:text-white"
+              class="flex w-full items-center justify-between p-4 text-left hover:text-white"
             >
               <div class="flex items-center">
-                <ListBulletIcon class="size-6 mr-2" />
+                <ListBulletIcon class="mr-2 size-6" />
                 <p>Categorías</p>
               </div>
               <ChevronDownIcon
                 :class="[
                   'size-4 transition-all duration-300',
-                  areCategoriesShown ? 'rotate-180' : '',
+                  areCategoriesShown ? 'rotate-180' : ''
                 ]"
               />
             </button>
             <div
               :class="[
-                'transition-all duration-300 ease-in overflow-hidden',
-                areCategoriesShown ? `h-full` : 'h-0',
+                'overflow-hidden transition-all duration-300 ease-in',
+                areCategoriesShown ? `h-full` : 'h-0'
               ]"
               :style="{
-                maxHeight: areCategoriesShown
-                  ? `${getCategoriesSectionHeight() * 4}px`
-                  : '0px',
+                maxHeight: areCategoriesShown ? `${getCategoriesSectionHeight() * 4}px` : '0px'
               }"
             >
-              <ul class="list-disc flex-col flex ml-8 mb-3.5 text-sm">
+              <ul class="mb-3.5 ml-8 flex list-disc flex-col text-sm">
                 <div v-for="category in categories" :key="category.id">
                   <RouterLink
                     :to="{
                       name: 'CategoryProducts',
-                      params: { categoryName: category.name.replace(' ', '-') },
+                      params: { categoryName: category.name.replace(' ', '-') }
                     }"
                   >
                     <button
                       :disabled="!areCategoriesShown"
-                      class="hover:text-white w-fit pl-6 py-1 my-0.5"
+                      class="my-0.5 w-fit py-1 pl-6 hover:text-white"
                     >
-                      <li :class="isAdmin ? 'w-28 mr-3' : 'w-full'">
-                        <div
-                          class="flex items-center justify-between text-left"
-                        >
+                      <li :class="isAdmin ? 'mr-3 w-28' : 'w-full'">
+                        <div class="flex items-center justify-between text-left">
                           <p>{{ category.name }}</p>
                         </div>
                       </li>
@@ -210,7 +199,7 @@ onUnmounted(() => {
                     v-if="isAdmin"
                     :disabled="!areCategoriesShown"
                     @click="showWarningSwal(category.id)"
-                    class="bg-white/10 mr-2 p-0.5 backdrop-blur-md rounded-full"
+                    class="mr-2 rounded-full bg-white/10 p-0.5 backdrop-blur-md"
                   >
                     <MinusIcon class="size-4" />
                   </button>
@@ -219,12 +208,10 @@ onUnmounted(() => {
                   v-if="isAdmin"
                   @click="showSwal()"
                   :disabled="!areCategoriesShown"
-                  class="hover:text-white bg-slate-950 rounded-lg w-fit pl-6 pr-2 py-1 my-0.5"
+                  class="my-0.5 w-fit rounded-lg bg-slate-950 py-1 pl-6 pr-2 hover:text-white"
                 >
                   <li>
-                    <div
-                      class="w-36 flex items-center justify-between text-left"
-                    >
+                    <div class="flex w-36 items-center justify-between text-left">
                       <p>Agregar</p>
                       <PlusIcon class="size-5" />
                     </div>
@@ -235,7 +222,7 @@ onUnmounted(() => {
           </div>
         </div>
         <div
-          class="w-full rounded-t-md bg-zinc-950 absolute bottom-0 flex justify-center py-2"
+          class="absolute bottom-0 flex w-full justify-center rounded-t-md bg-zinc-950 py-2"
           @mouseover="shouldShowLogoutButton = true"
           @mouseleave="shouldShowLogoutButton = false"
         >
@@ -243,15 +230,15 @@ onUnmounted(() => {
         </div>
         <div
           :class="[
-            'w-full bg-zinc-950 rounded-t-md absolute bottom-0 transition-all duration-300',
-            shouldShowLogoutButton ? '' : 'translate-y-16',
+            'absolute bottom-0 w-full rounded-t-md bg-zinc-950 transition-all duration-300',
+            shouldShowLogoutButton ? '' : 'translate-y-16'
           ]"
           @mouseover="shouldShowLogoutButton = true"
           @mouseleave="shouldShowLogoutButton = false"
         >
           <button
             @click="useUserStore().logout(router)"
-            class="w-full py-5 active:text-zinc-400 text-white hover:scale-95 transition-all duration-150"
+            class="w-full py-5 text-white transition-all duration-150 hover:scale-95 active:text-zinc-400"
           >
             Cerrar sesión
           </button>
@@ -260,24 +247,21 @@ onUnmounted(() => {
     </div>
 
     <!-- Main content -->
-    <div class="flex flex-col flex-grow">
+    <div class="flex flex-grow flex-col">
       <!-- Navbar -->
-      <nav class="bg-slate-900 min-h-16 px-4 flex items-center justify-between">
-        <button
-          @click="toggleSidebar"
-          class="text-zinc-400 hover:text-white lg:hidden"
-        >
+      <nav class="flex min-h-16 items-center justify-between bg-slate-900 px-4">
+        <button @click="toggleSidebar" class="text-zinc-400 hover:text-white lg:hidden">
           <Bars3Icon class="size-6" />
         </button>
-        <div class="flex justify-center flex-grow">
+        <div class="flex flex-grow justify-center">
           <div class="relative w-3/5">
             <input
               type="text"
               placeholder="Search..."
-              class="w-full px-4 py-2 pr-10 rounded-md bg-slate-600 text-white placeholder-zinc-400 focus:outline-none ring-slate-600 ring-1 focus:ring-zinc-400"
+              class="w-full rounded-md bg-slate-600 px-4 py-2 pr-10 text-white placeholder-zinc-400 ring-1 ring-slate-600 focus:outline-none focus:ring-zinc-400"
             />
             <button
-              class="absolute right-2 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-white"
+              class="absolute right-2 top-1/2 -translate-y-1/2 transform text-zinc-400 hover:text-white"
             >
               <MagnifyingGlassIcon class="size-5" />
             </button>
@@ -286,9 +270,7 @@ onUnmounted(() => {
       </nav>
 
       <!-- Page content -->
-      <main
-        class="flex-grow p-4 overflow-y-auto bg-gradient-to-tr from-gray-800 to-zinc-950"
-      >
+      <main class="flex-grow overflow-y-auto bg-gradient-to-tr from-gray-800 to-zinc-950 p-4">
         <router-view />
       </main>
     </div>

@@ -1,34 +1,34 @@
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2'
 
 const showConfirmationSwal = async (title: string, text: string) => {
-  let isConfirmed: boolean | null = null;
+  let isConfirmed: boolean | null = null
   await Swal.fire({
     title: title,
     text: text,
-    icon: "warning",
+    icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: "red",
-    confirmButtonText: "Confirmar",
-    cancelButtonText: "Cancelar",
+    confirmButtonColor: 'red',
+    confirmButtonText: 'Confirmar',
+    cancelButtonText: 'Cancelar',
     reverseButtons: true,
     customClass: {
-      popup: "colored-toast",
-      title: "colored-modal-title",
-      htmlContainer: "colored-modal-text",
-      confirmButton: "colored-modal-button",
-      cancelButton: "colored-modal-button",
-    },
+      popup: 'colored-toast',
+      title: 'colored-modal-title',
+      htmlContainer: 'colored-modal-text',
+      confirmButton: 'colored-modal-button',
+      cancelButton: 'colored-modal-button'
+    }
   }).then((result) => {
     if (result.isConfirmed) {
-      isConfirmed = true;
+      isConfirmed = true
     } else {
-      isConfirmed = false;
+      isConfirmed = false
     }
-  });
-  return isConfirmed;
-};
+  })
+  return isConfirmed
+}
 
-const style = document.createElement("style");
+const style = document.createElement('style')
 style.textContent = `
   .colored-toast {
     background-color: #1e293b !important;
@@ -42,7 +42,7 @@ style.textContent = `
   .colored-modal-text {
     color: #e2e8f0 !important;
   }
-`;
-document.head.appendChild(style);
+`
+document.head.appendChild(style)
 
-export default showConfirmationSwal;
+export default showConfirmationSwal

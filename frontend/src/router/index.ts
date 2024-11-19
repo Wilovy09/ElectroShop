@@ -1,22 +1,22 @@
-import { createRouter, createWebHistory } from "vue-router";
-import { routes } from "./routes";
-import { useUserStore } from "../stores/useUserStore";
+import { createRouter, createWebHistory } from 'vue-router'
+import { routes } from './routes'
+import { useUserStore } from '../stores/useUserStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: routes,
-});
+  routes: routes
+})
 
 router.beforeEach((to, from, next) => {
-  const toRouteName = to.name?.toString();
+  const toRouteName = to.name?.toString()
 
-  const token = useUserStore().token ?? useUserStore().getToken();
+  const token = useUserStore().token ?? useUserStore().getToken()
   if (to.meta.requiresAuth && !token) {
-    if (toRouteName !== "Authentication") {
-      return next({ name: "Authentication" });
+    if (toRouteName !== 'Authentication') {
+      return next({ name: 'Authentication' })
     }
   }
-  next();
-});
+  next()
+})
 
-export default router;
+export default router

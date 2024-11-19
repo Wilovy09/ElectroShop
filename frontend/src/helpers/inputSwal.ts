@@ -1,29 +1,29 @@
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2'
 
 export async function showInputSwal(title: string) {
   const inputValue = await Swal.fire({
     title: title,
-    input: "text",
+    input: 'text',
     showCancelButton: true,
-    confirmButtonColor: "#059669",
-    confirmButtonText: "Aceptar",
-    cancelButtonText: "Cancelar",
+    confirmButtonColor: '#059669',
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
     inputValidator: (value) => {
       if (!value) {
-        return "Escriba un nombre por favor";
+        return 'Escriba un nombre por favor'
       }
     },
     customClass: {
-      popup: "colored-toast",
-      title: "colored-modal-title",
-      input: "colored-modal-input",
-      validationMessage: "colored-modal-validation",
-    },
-  });
-  return inputValue.value;
+      popup: 'colored-toast',
+      title: 'colored-modal-title',
+      input: 'colored-modal-input',
+      validationMessage: 'colored-modal-validation'
+    }
+  })
+  return inputValue.value
 }
 
-const style = document.createElement("style");
+const style = document.createElement('style')
 style.textContent = `
   .colored-toast {
     background-color: #1e293b !important;
@@ -49,7 +49,7 @@ style.textContent = `
   .colored-modal-validation {
     color: #ef4444 !important;
   }
-`;
-document.head.appendChild(style);
+`
+document.head.appendChild(style)
 
-export default showInputSwal;
+export default showInputSwal
