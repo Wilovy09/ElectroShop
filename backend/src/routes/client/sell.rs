@@ -1,4 +1,7 @@
-use crate::{models::transaction::TransactionSellResponse, params::sell::PartialSell, responses::message::Messages, AppState};
+use crate::{
+    models::transaction::TransactionSellResponse, params::sell::PartialSell,
+    responses::message::Messages, AppState,
+};
 use actix_web::{
     get, post,
     web::{self, Data, Json},
@@ -7,13 +10,11 @@ use actix_web::{
 use sqlx::query;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    cfg.service(create_sell) // Endpoint para crear venta
-        .service(get_sell_transactions); // Endpoint para obtener ventas y transacciones
+    cfg.service(create_sell).service(get_sell_transactions);
 }
 
 #[post("/sell")]
 async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResponse {
-    // Insertar en la tabla `Sell`
     let sell_id: i64 = match sqlx::query_scalar(
         r#"
         INSERT INTO Sell (user_id, total_amount)
@@ -35,7 +36,6 @@ async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResp
         }
     };
 
-    // Insertar en la tabla `Transaction` por cada producto
     for product in &body.transactions {
         if let Err(err) = query(
             r#"
@@ -43,10 +43,10 @@ async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResp
             VALUES ($1, $2, $3, $4)
             "#,
         )
-        .bind(sell_id) // ID de la venta
-        .bind(&product.product_name) // Nombre del producto
-        .bind(product.id_product) // ID del producto
-        .bind(product.quantity) // Cantidad
+        .bind(sell_id)
+        .bind(&product.product_name)
+        .bind(product.id_product)
+        .bind(product.quantity)
         .execute(&state.db)
         .await
         {
@@ -57,7 +57,6 @@ async fn create_sell(state: Data<AppState>, body: Json<PartialSell>) -> HttpResp
         }
     }
 
-    // Retornar No Content
     HttpResponse::NoContent().finish()
 }
 
