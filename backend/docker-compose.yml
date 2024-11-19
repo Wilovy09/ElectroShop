@@ -1,0 +1,15 @@
+services:
+  app:
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: electroshop
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=sqlite:///usr/src/app/temp/sqlx.db
+      - SECRET_KEY=8kMtmZpwICmmASOwqaRtGLVHYphQ4s3oWPBgK66zjNyfqDbNoT
+    volumes:
+      - .:/usr/src/app
+    command: ["./target/release/backend"]

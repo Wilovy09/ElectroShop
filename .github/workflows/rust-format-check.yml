@@ -1,0 +1,38 @@
+name: Check Rust Code Formatting
+
+on:
+  pull_request:
+    paths:
+      - "**/*.rs"
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+      - "release/**"
+      - "backend/**"
+
+jobs:
+  rust-format-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install rustfmt
+        run: rustup component add rustfmt
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Upload formatting errors (if any)
+        if: failure()
+        run: |
+          echo "Rust code is not formatted correctly. Please run 'cargo fmt' locally."

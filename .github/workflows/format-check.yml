@@ -1,0 +1,40 @@
+name: Check Frontend Code Formatting
+
+on:
+  pull_request:
+    paths:
+      - "frontend/**"
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+      - "release/**"
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Run Prettier check
+        working-directory: frontend
+        run: npx prettier --check "src/**/*.{js,ts,css,html,json,vue}"
+
+      - name: Upload formatting errors (if any)
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: formatting-errors
+          path: frontend
