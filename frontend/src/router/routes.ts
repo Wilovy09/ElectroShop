@@ -2,7 +2,7 @@ const routes = [
   {
     path: '/auth',
     name: 'Authentication',
-    component: () => import('../pages/AuthenticationPage/AuthPage.vue')
+    component: () => import('../pages/AuthenticationPage/AuthPage.vue'),
   },
   {
     path: '/',
@@ -13,25 +13,27 @@ const routes = [
       {
         path: '',
         name: 'Home',
-        component: () => import('../pages/HomePage/Home.vue')
+        component: () => import('../pages/HomePage/Home.vue'),
+        meta: { key: 'home' },
       },
       {
         path: '/product/:id',
         name: 'product',
-        component: () => import('../pages/SpecificProductPage/SpecificProductPage.vue')
+        component: () => import('../pages/SpecificProductPage/SpecificProductPage.vue'),
       },
       {
         path: '/cart',
         name: 'cart',
-        component: () => import('../pages/CartPage/CartPage.vue')
+        component: () => import('../pages/CartPage/CartPage.vue'),
       },
       {
         path: '/:categoryName/products',
         name: 'CategoryProducts',
-        component: () => import('../pages/HomePage/Home.vue')
-      }
-    ]
-  }
-]
+        component: () => import('../pages/HomePage/Home.vue'),
+        meta: { key: 'category-products' },
+      },
+    ],
+  },
+];
 
-export { routes }
+export { routes };
