@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { sellDetails } from '../../entities/Sell';
-import { sellHistoryRepository } from '../../repositories/sellHistoryRepository';
+import { useRouter } from 'vue-router'
+import { sellDetails } from '../../entities/Sell'
+import { sellHistoryRepository } from '../../repositories/sellHistoryRepository'
 import { useCartStore } from '../../stores/useCartStore'
-import { useUserStore } from '../../stores/useUserStore';
-import showSuccedSwal from '../../helpers/succedSwal';
-import handleError from '../../helpers/handleError';
-import { ref } from 'vue';
+import { useUserStore } from '../../stores/useUserStore'
+import showSuccedSwal from '../../helpers/succedSwal'
+import handleError from '../../helpers/handleError'
+import { ref } from 'vue'
 
 const cartStore = useCartStore()
 
@@ -19,11 +19,11 @@ function handleClear() {
 }
 const isLoading = ref(false)
 async function proceedToCheckout() {
-  isLoading.value =true
+  isLoading.value = true
   const userId = useUserStore().userId ?? useUserStore().getUserId()
-  if(!userId) useUserStore().logout(useRouter())
+  if (!userId) useUserStore().logout(useRouter())
   const checkoutData: sellDetails = {
-    user_id: userId, 
+    user_id: userId,
     total_amount: cartStore.totalPrice,
     transactions: cartStore.cartItems.map((item) => ({
       product_name: item.product.name,
@@ -31,14 +31,14 @@ async function proceedToCheckout() {
       quantity: item.quantity
     }))
   }
-  try{
+  try {
     await sellHistoryRepository.createSellPoint(checkoutData)
     handleClear()
-    showSuccedSwal("Operación realizada con exito")
-  }catch(e){
+    showSuccedSwal('Operación realizada con exito')
+  } catch (e) {
     console.log(e)
     handleError(e)
-  }finally{
+  } finally {
     isLoading.value = false
   }
 }
@@ -53,7 +53,7 @@ async function proceedToCheckout() {
         <button
           v-if="cartStore.cartItems.length > 0"
           @click="handleClear"
-          class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-700 hover:scale-95"
+          class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:scale-95 hover:bg-blue-700"
         >
           Vaciar carrito
         </button>
@@ -77,13 +77,15 @@ async function proceedToCheckout() {
             </div>
 
             <!-- Product Details -->
-            <div class="flex-1 min-w-0"> <!-- Added min-w-0 to ensure text truncation works -->
+            <div class="min-w-0 flex-1">
+              <!-- Added min-w-0 to ensure text truncation works -->
               <div class="flex items-start justify-between gap-4">
-                <div class="min-w-0 flex-1"> <!-- Added min-w-0 and flex-1 for proper truncation -->
-                  <h2 class="text-xl font-semibold text-white truncate">
+                <div class="min-w-0 flex-1">
+                  <!-- Added min-w-0 and flex-1 for proper truncation -->
+                  <h2 class="truncate text-xl font-semibold text-white">
                     {{ item.product.name }}
                   </h2>
-                  <p class="mt-1 text-sm text-zinc-400 text-wrap line-clamp-3">
+                  <p class="mt-1 line-clamp-3 text-wrap text-sm text-zinc-400">
                     {{ item.product.description }}
                   </p>
                 </div>
@@ -102,7 +104,8 @@ async function proceedToCheckout() {
                     Cantidad: <span class="font-medium text-white">{{ item.quantity }}</span>
                   </p>
                   <p class="text-sm text-zinc-400">
-                    Precio unitario: <span class="font-medium text-white">${{ item.product.price.toFixed(2) }}</span>
+                    Precio unitario:
+                    <span class="font-medium text-white">${{ item.product.price.toFixed(2) }}</span>
                   </p>
                 </div>
                 <div class="text-right">
@@ -125,7 +128,7 @@ async function proceedToCheckout() {
             </div>
             <button
               @click="proceedToCheckout"
-              class="rounded-lg bg-green-600 px-6 py-3 font-medium text-white transition-all hover:bg-green-700 hover:scale-95"
+              class="rounded-lg bg-green-600 px-6 py-3 font-medium text-white transition-all hover:scale-95 hover:bg-green-700"
             >
               Proceder al pago
             </button>

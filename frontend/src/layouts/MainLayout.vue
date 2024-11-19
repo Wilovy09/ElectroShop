@@ -199,7 +199,7 @@ onUnmounted(() => {
                     v-if="isAdmin"
                     :disabled="!areCategoriesShown"
                     @click="showWarningSwal(category.id)"
-                    class=" rounded-full bg-white/10 p-0.5 backdrop-blur-md"
+                    class="rounded-full bg-white/10 p-0.5 backdrop-blur-md"
                   >
                     <MinusIcon class="size-4" />
                   </button>
@@ -272,7 +272,6 @@ onUnmounted(() => {
       <!-- Page content -->
       <main class="flex-grow overflow-y-auto bg-gradient-to-tr from-gray-800 to-zinc-950 p-4">
         <router-view :key="$route.name + JSON.stringify($route.params)" />
-
       </main>
     </div>
   </div>

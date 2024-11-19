@@ -175,7 +175,7 @@ async function handleSubmit() {
     }
   } catch (e) {
     handleError(e)
-  }finally{
+  } finally {
     isLoading.value = false
   }
 }

@@ -21,6 +21,6 @@ export async function apiRequest(
         : `Ha ocurrido un error inesperado`
     )
   }
-  if(response.statusText === "No Content")return null
+  if (response.statusText === 'No Content') return null
   return response.json()
 }

@@ -48,7 +48,7 @@ const selectedProduct = ref<{
 })
 
 async function getProducts() {
-  isLoading.value =true
+  isLoading.value = true
   try {
     if (routeName == 'Home') {
       products.value = await productsRepository.getAllProducts()
@@ -69,7 +69,9 @@ async function getProducts() {
     }
   } catch (e) {
     handleError(e)
-  }finally{isLoading.value = false}
+  } finally {
+    isLoading.value = false
+  }
 }
 
 function showFormModal(chosenProduct?: Product) {
@@ -102,7 +104,9 @@ async function deleteProduct(productId: number) {
     showSuccedSwal('Producto eliminado')
   } catch (e) {
     handleError(e)
-  }finally{isLoading.value = false}
+  } finally {
+    isLoading.value = false
+  }
 }
 
 function handleAction(response: Product) {
@@ -120,13 +124,9 @@ onMounted(getProducts)
 </script>
 
 <template>
-  <VLoader v-if="isLoading"/>
+  <VLoader v-if="isLoading" />
   <div v-else class="flex w-full justify-center">
-    <div
-      :class="[
-        'grid w-full grid-cols-1 max-w-max gap-8 sm:grid-cols-2 xl:grid-cols-3',
-      ]"
-    >
+    <div :class="['grid w-full max-w-max grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3']">
       <div v-for="product in products" :key="product.id" class="relative">
         <ProductCard :product="product" />
         <div v-if="isAdmin" class="absolute right-0 top-0 flex gap-2 p-2">
@@ -138,7 +138,11 @@ onMounted(getProducts)
           </button>
         </div>
       </div>
-      <AddProductCard v-if="isAdmin" :class="products?.length ? '': ' min-w-80 min-[400px]:min-w-96'" @click="showFormModal()" />
+      <AddProductCard
+        v-if="isAdmin"
+        :class="products?.length ? '' : 'min-w-80 min-[400px]:min-w-96'"
+        @click="showFormModal()"
+      />
       <AddProductForm
         v-if="showForm"
         @save="(value) => handleAction(value)"
