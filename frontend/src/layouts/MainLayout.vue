@@ -271,7 +271,8 @@ onUnmounted(() => {
 
       <!-- Page content -->
       <main class="flex-grow overflow-y-auto bg-gradient-to-tr from-gray-800 to-zinc-950 p-4">
-        <router-view />
+        <router-view :key="$route.name + JSON.stringify($route.params)" />
+
       </main>
     </div>
   </div>
