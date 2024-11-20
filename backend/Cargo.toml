@@ -3,6 +3,8 @@ name = "backend"
 version = "0.1.0"
 edition = "2021"
 
+default-run = "backend"
+
 [dependencies]
 actix-web = "4.9.0"
 actix-cors = "0.6"
