@@ -12,7 +12,7 @@ import {
   PlusIcon
 } from '@heroicons/vue/24/outline'
 import { useUserStore } from '../stores/useUserStore'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { MinusIcon } from '@heroicons/vue/24/solid'
 import handleError from '../helpers/handleError'
 import { showInputSwal } from '../helpers/inputSwal'
@@ -20,6 +20,7 @@ import showSuccedSwal from '../helpers/succedSwal'
 import showConfirmationSwal from '../helpers/confirmationSwal'
 import { useCategoryStore } from '../stores/useCategoryStore'
 
+const route = useRoute()
 const router = useRouter()
 const isAdmin = useUserStore().userRole === 'Administrador'
 
@@ -65,12 +66,20 @@ async function showWarningSwal(categoryId: number) {
       'Todos los productos de esta categoría serán eliminados'
     )
     if (response !== true) return
+    const category = categories.value?.find((category) => {
+      return category.id === categoryId
+    })
     await useCategoryStore().deleteCategory(categoryId)
     if (categories.value)
       categories.value = categories.value.filter((value) => {
         if (value.id !== categoryId) return value
       })
     showSuccedSwal('Categoría eliminada con exito')
+    if (
+      route.name == 'CategoryProducts' &&
+      route.params.categoryName == category?.name.replace(' ', '-')
+    )
+      router.push({ name: 'Home' })
   } catch (e) {
     handleError(e)
   }

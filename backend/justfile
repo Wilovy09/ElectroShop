@@ -1,0 +1,4 @@
+setup:
+    cargo run --bin setup
+dev:
+    cargo run --bin backend

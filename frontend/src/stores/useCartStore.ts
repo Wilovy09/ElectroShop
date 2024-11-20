@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { Product } from '../entities/Product'
+import showSuccedSwal from '../helpers/succedSwal'
 
 export const useCartStore = defineStore('cart', () => {
   const savedCart = localStorage.getItem('cart')
@@ -21,6 +22,7 @@ export const useCartStore = defineStore('cart', () => {
     } else {
       cartItems.value.push({ product, quantity })
     }
+    showSuccedSwal('Producto añadido al carrito')
   }
 
   function removeFromCart(productId: number) {
