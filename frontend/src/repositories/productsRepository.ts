@@ -5,6 +5,10 @@ import { useUserStore } from '../stores/useUserStore'
 import handleError from '../helpers/handleError'
 
 export class productsRepository {
+  public static async getSpecificProduct(productId: number) {
+    return await apiRequest(`/products/${productId}`, 'GET')
+  }
+
   public static async getAllProducts(): Promise<Product[]> {
     return await apiRequest('/products', 'GET')
   }
