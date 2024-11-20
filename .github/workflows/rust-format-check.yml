@@ -3,8 +3,10 @@ name: Check Rust Code Formatting
 on:
   pull_request:
     paths:
-      - "**/*.rs"
+      - "**/**/*.rs"
   push:
+    paths:
+      - "**/**/*.rs"
     branches:
       - main
       - develop
@@ -15,7 +17,9 @@ on:
 jobs:
   rust-format-check:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
