@@ -37,7 +37,6 @@ async function proceedToCheckout() {
     handleClear()
     showSuccedSwal('Operación realizada con exito')
   } catch (e) {
-    console.log(e)
     handleError(e)
   } finally {
     isLoading.value = false
