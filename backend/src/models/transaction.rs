@@ -10,4 +10,3 @@ pub struct TransactionSellResponse {
     pub id_product: i64,
     pub quantity: i32,
 }
-

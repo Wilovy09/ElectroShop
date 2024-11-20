@@ -1,5 +1,5 @@
 use dotenv::dotenv;
-use sqlx::{sqlite::SqlitePoolOptions};
+use sqlx::sqlite::SqlitePoolOptions;
 
 #[actix_web::main]
 async fn main() {
@@ -17,7 +17,8 @@ async fn main() {
         .await
         .expect("Error al habilitar claves foráneas");
 
-    sqlx::query(r#"
+    sqlx::query(
+        r#"
     DROP TABLE IF EXISTS User;
     DROP TABLE IF EXISTS Category;
     DROP TABLE IF EXISTS Product;
@@ -63,9 +64,9 @@ async fn main() {
         FOREIGN KEY (id_sell) REFERENCES Sell (id),
         FOREIGN KEY (id_product) REFERENCES Product (id)
     );
-    "#)
-        .execute(&pool)
-        .await
-        .expect("Error al limpiar base de datos");
+    "#,
+    )
+    .execute(&pool)
+    .await
+    .expect("Error al limpiar base de datos");
 }
-
