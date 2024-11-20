@@ -3,8 +3,10 @@ name: Check Rust Code Formatting
 on:
   pull_request:
     paths:
-      - "**/*.rs"
+      - "**/**/*.rs"
   push:
+    paths:
+      - "**/**/*.rs"
     branches:
       - main
       - develop
