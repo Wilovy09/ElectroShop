@@ -13,7 +13,7 @@ function addToCart(product: Product) {
 </script>
 
 <template>
-  <div class="w-full max-w-sm rounded-xl bg-gray-800 text-white shadow-lg">
+  <div class="h-full w-full max-w-sm rounded-xl bg-gray-800 text-white shadow-lg">
     <!-- Enlace al producto -->
     <a :href="`/product/${product.id}`" class="block max-h-48 overflow-hidden rounded-t-xl">
       <img class="h-48 w-full object-cover" :src="product.image" :alt="product.name" />
@@ -22,7 +22,7 @@ function addToCart(product: Product) {
     <!-- Información del producto -->
     <div class="p-4">
       <h2 class="text-lg font-semibold">{{ product.name }}</h2>
-      <p class="line-clamp-2 text-sm text-gray-400">
+      <p class="line-clamp-2 min-h-10 text-sm text-gray-400">
         {{ product.description }}
       </p>
       <p class="mt-2 text-lg font-bold text-blue-400">${{ product.price.toFixed(2) }}</p>
